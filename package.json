@@ -14,10 +14,8 @@
     "framer-motion": "^11.11.17",
     "next": "14.2.18",
     "react": "^18",
-    "react-dnd": "^16.0.1",
-    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18",
-    "react-flow-renderer": "^10.3.17",
+    "react-icons": "^5.3.0",
     "uuid": "^11.0.3"
   },
   "devDependencies": {

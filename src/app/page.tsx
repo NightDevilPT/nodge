@@ -1,8 +1,9 @@
-import ReactFlowPlayground from "@/components/react-flow";
-import Image from "next/image";
+import ReactFlowSetup from "@/components/react-flow/ReactFlowSetup";
 
 export default function Home() {
   return (
-    <ReactFlowPlayground />
+    <div className="w-full h-full p-2 bg-background flex justify-center items-center">
+      <ReactFlowSetup />
+    </div>
   );
 }
