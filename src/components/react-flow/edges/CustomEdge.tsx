@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-  BaseEdge,
-  EdgeLabelRenderer,
-  getStraightPath,
-  useReactFlow,
-  EdgeProps,
-  getSmoothStepPath,
-} from '@xyflow/react';
-import { FaPlus } from 'react-icons/fa';
+import { BaseEdge, EdgeLabelRenderer, getSmoothStepPath } from '@xyflow/react';
+import { useDnD } from '../DnDContext';  // Importing the useDnD hook to interact with the context
 
 // Define the expected props for the CustomEdge component
 interface CustomEdgeProps {
@@ -25,7 +18,8 @@ const CustomEdge: React.FC<CustomEdgeProps> = ({
   targetX,
   targetY,
 }) => {
-  const { setEdges } = useReactFlow();
+  // Using the DnDContext's removeEdge function
+  const { removeEdge } = useDnD();
   
   // Get the edge path and label position using the helper function
   const [edgePath, labelX, labelY] = getSmoothStepPath({
@@ -50,8 +44,8 @@ const CustomEdge: React.FC<CustomEdgeProps> = ({
           }}
           className="nodrag nopan"
           onClick={() => {
-            // Remove the edge when the delete button is clicked
-            setEdges((edges) => edges.filter((e) => e.id !== id));
+            // Use the removeEdge function from context to delete the edge
+            removeEdge(id);
           }}
         >
           delete

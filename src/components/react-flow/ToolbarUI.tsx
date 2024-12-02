@@ -1,12 +1,11 @@
 import React, { DragEvent } from 'react';
 import { useDnD } from './DnDContext';
 import { NodeType, InputNode, DefaultNode, OutputNode } from './nodes';
-import { FaPlug, FaRegPlayCircle, FaArrowCircleRight } from 'react-icons/fa'; // Import icons from react-icons
+import { FaPlug, FaRegPlayCircle, FaArrowCircleRight } from 'react-icons/fa';
 
 const DragAndDropComponent: React.FC = () => {
-  const [_, setType] = useDnD();
+  const { setType } = useDnD();
 
-  // onDragStart function with typed parameters
   const onDragStart = (event: DragEvent<HTMLDivElement>, nodeType: NodeType): void => {
     setType(nodeType);
     event.dataTransfer.effectAllowed = 'move';
@@ -27,8 +26,8 @@ const DragAndDropComponent: React.FC = () => {
           onDragStart={(event) => onDragStart(event, node.type as NodeType)}
           draggable
         >
-          <span className="text-sm">{node.icon}</span> {/* Display the icon */}
-          <span className="text-sm">{node.label}</span> {/* Display the label */}
+          <span className="text-sm">{node.icon}</span>
+          <span className="text-sm">{node.label}</span>
         </div>
       ))}
     </div>
