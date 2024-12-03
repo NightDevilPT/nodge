@@ -1,4 +1,5 @@
 import React from 'react';
+import { IoClose } from "react-icons/io5";
 import { BaseEdge, EdgeLabelRenderer, getSmoothStepPath } from '@xyflow/react';
 import { useDnD } from '../DnDContext';  // Importing the useDnD hook to interact with the context
 
@@ -42,13 +43,12 @@ const CustomEdge: React.FC<CustomEdgeProps> = ({
             transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
             pointerEvents: 'all',
           }}
-          className="nodrag nopan"
+          className="nodrag nopan w-4 h-4 rounded-md bg-gray-300 text-gray-500"
           onClick={() => {
-            // Use the removeEdge function from context to delete the edge
             removeEdge(id);
           }}
         >
-          delete
+          <IoClose className='w-full h-full' />
         </button>
       </EdgeLabelRenderer>
     </>
