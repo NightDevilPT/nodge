@@ -8,7 +8,7 @@ import DragAndDropComponent from "./ToolbarUI";
 
 const DnDFlow: React.FC = () => {
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
-  const { nodes, edges, addNode, removeNode, addEdge, removeEdge, type } = useDnD();
+  const { nodes, edges, addNode, removeNode, addEdge, removeEdge, type,onNodesChange,onEdgesChange } = useDnD();
   const { screenToFlowPosition } = useReactFlow();
 
   const onConnect = useCallback((params) => {
@@ -55,8 +55,9 @@ const DnDFlow: React.FC = () => {
           onConnect={onConnect}
           onDrop={onDrop}
           onDragOver={onDragOver}
-          defaultMarkerColor={"red"}
           snapGrid={[30, 30]}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
           edgeTypes={{
             custom: (props) => <CustomEdge {...props} removeEdge={removeEdge} />,
           }}
