@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import {
 	addEdge,
 	Background,
@@ -14,12 +14,20 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { AppNode, NodeTypesEnum } from "../interface";
-import { getUniqueId } from "@/lib/utils";
+import { CreateNode } from "../nodes/node-registry";
+import NodeComponent from "../nodes/custom-node";
 
-const snapGrid: [number, number] = [50, 50];
+const snapGrid: [number, number] = [20, 20];
+
+const nodeTypes = {
+	FlowScrap: NodeComponent,
+};
 
 const FlowEditor = () => {
-	const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
+	const reactFlowWrapper = useRef(null);
+	const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([
+		CreateNode(NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT),
+	]);
 	const [edges, setEdges, onEdgesChange] = useNodesState([]);
 	const { screenToFlowPosition } = useReactFlow();
 
@@ -39,15 +47,10 @@ const FlowEditor = () => {
 				x: event.clientX,
 				y: event.clientY,
 			});
-			const newNode = {
-				id: getUniqueId(),
-				type: taskType as NodeTypesEnum,
-				position,
-				data: { label: `${taskType} node` },
-			};
+			const newNode: AppNode = CreateNode(taskType as NodeTypesEnum);
+			newNode.position = position;
 
 			setNodes((nds) => nds.concat(newNode));
-			// setType(null);
 		},
 		[screenToFlowPosition]
 	);
@@ -60,6 +63,8 @@ const FlowEditor = () => {
 	return (
 		<React.Fragment>
 			<ReactFlow
+				className="react-flow"
+				ref={reactFlowWrapper}
 				nodes={nodes}
 				edges={edges}
 				onNodesChange={onNodesChange}
@@ -68,6 +73,7 @@ const FlowEditor = () => {
 				onDrop={onDrop}
 				onDragOver={onDragOver}
 				onConnect={onConnect}
+				nodeTypes={nodeTypes}
 			/>
 			<Controls />
 			<Background variant={BackgroundVariant.Dots} gap={12} />
