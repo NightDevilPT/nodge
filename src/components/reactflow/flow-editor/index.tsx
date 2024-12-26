@@ -25,9 +25,7 @@ const nodeTypes = {
 
 const FlowEditor = () => {
 	const reactFlowWrapper = useRef(null);
-	const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([
-		CreateNode(NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT),
-	]);
+	const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
 	const [edges, setEdges, onEdgesChange] = useNodesState([]);
 	const { screenToFlowPosition } = useReactFlow();
 
@@ -76,8 +74,8 @@ const FlowEditor = () => {
 				nodeTypes={nodeTypes}
 			/>
 			<Controls />
-			<Background variant={BackgroundVariant.Dots} gap={12} />
 			<MiniMap />
+			<Background variant={BackgroundVariant.Dots} gap={12} />
 		</React.Fragment>
 	);
 };

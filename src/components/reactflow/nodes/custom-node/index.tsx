@@ -21,12 +21,12 @@ const NodeComponent = ({
 	const { type, inputs, output, icon: Icon, label } = data as AppNodeData;
 	return (
 		<Card
-			className={`rounded-md overflow-hidden ${
+			className={`rounded-md ${
 				selected && "ring-2 ring-primary/80"
 			}`}
 		>
-			<NodeHeader icon={Icon} label={label} />
-			<CardContent className={`p-0 px-3 py-3 bg-secondary`}>
+			<NodeHeader icon={Icon} label={label} dragHandle={dragHandle} />
+			<CardContent className={`p-0 px-3 py-3 bg-secondary rounded-b-md`}>
 				{inputs.map((items: NodeInputs, index: number) => (
 					<NodeInput {...items} key={items.label + ":" + index} />
 				))}

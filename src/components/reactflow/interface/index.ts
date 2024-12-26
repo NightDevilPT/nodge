@@ -2,6 +2,7 @@ import { Node } from "@xyflow/react";
 
 export enum NodeTypesEnum {
 	EXTRACT_TEXT_FROM_ELEMENT = "extract-text-from-element",
+	EXTRACT_JSON_FROM_ELEMENT = "extract-json-from-element",
 }
 
 export interface AppNodeData {
@@ -10,6 +11,7 @@ export interface AppNodeData {
 	icon: React.ElementType;
 	inputs: NodeInputs[];
 	output: NodeOutput;
+	execution?: () => void;
 	[key: string]: any;
 }
 
