@@ -9,8 +9,8 @@ export interface AppNodeData {
 	type: NodeTypesEnum;
 	label: string;
 	icon: React.ElementType;
-	inputs: NodeInputs[];
-	output: NodeOutput;
+	inputs: NodeInputProps[];
+	output: NodeOutputProps;
 	execution?: () => void;
 	[key: string]: any;
 }
@@ -19,12 +19,12 @@ export enum InputTypesEnum {
 	STRING = "STRING",
 }
 
-export interface NodeOutput {
+export interface NodeOutputProps {
 	label: string;
 	value: string;
 }
 
-export interface NodeInputs {
+export interface NodeInputProps {
 	label: string;
 	type: InputTypesEnum;
 	value: string;

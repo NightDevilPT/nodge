@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { SidebarButtons } from "../nodes/node-registry";
+import { NodeIconColor, SidebarButtons } from "../nodes/node-registry";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import { NodeTypesEnum, SidebarButtonProps } from "../interface";
+import { SidebarButtonProps } from "../interface";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
@@ -67,14 +67,9 @@ export const ToolBarButton = ({
 	};
 
 	const onDragStart = (event: React.DragEvent) => {
-		console.log(type, "TYPECONSOLING");
 		event.dataTransfer.effectAllowed = "move";
 		event.dataTransfer.setData("application/reactflow", type);
 	};
-
-	const onDoubleClick=()=>{
-
-	}
 
 	return (
 		<AccordionContent
@@ -83,7 +78,7 @@ export const ToolBarButton = ({
 			className={`w-full p-0 px-3 cursor-pointer mb-3`}
 		>
 			<Button className={`flex w-full justify-start items-center gap-2`} variant={"outline"}>
-				<Icon className={`w-4 h-4`} />
+				<Icon className={`w-4 h-4 ${NodeIconColor[type]}`} />
 				<Label className={`capitalize cursor-pointer`}>{formatLabel()}</Label>
 			</Button>
 		</AccordionContent>
