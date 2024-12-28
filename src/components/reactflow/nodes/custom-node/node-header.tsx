@@ -3,12 +3,14 @@ import { Label } from "@/components/ui/label";
 import React from "react";
 import { MdDelete, MdDragIndicator } from "react-icons/md";
 import { IoIosCopy } from "react-icons/io";
+import { useReactFlow } from "@xyflow/react";
 
 interface NodeHeaderProps {
 	label: string;
 	icon: React.ElementType;
 	iconColor: string;
 	dragHandle: string | undefined;
+	nodeId:string;
 }
 
 const NodeHeader = ({
@@ -16,8 +18,15 @@ const NodeHeader = ({
 	icon: Icon,
 	dragHandle,
 	iconColor,
+	nodeId
 }: NodeHeaderProps) => {
-	console.log(dragHandle);
+	const { getNodes, setNodes } = useReactFlow();
+
+    const handleDeleteNode = () => {
+        const updatedNodes = getNodes().filter((node) => node.id !== nodeId);
+        setNodes(updatedNodes);
+    };
+
 	return (
 		<CardHeader
 			className={`min-w-80 p-0 px-3 py-3 rounded-t-md border-accent border-b-2`}
@@ -37,7 +46,7 @@ const NodeHeader = ({
 					<button className={`w-5 h-5`}>
 						<IoIosCopy className={`w-4 h-4 text-green-400`} />
 					</button>
-					<button className={`w-5 h-5`}>
+					<button className={`w-5 h-5`} onClick={handleDeleteNode}>
 						<MdDelete className={`w-5 h-5 text-red-400`} />
 					</button>
 					<button

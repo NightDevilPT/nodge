@@ -5,6 +5,7 @@ import {
 	addEdge,
 	Background,
 	BackgroundVariant,
+	ColorMode,
 	Connection,
 	Controls,
 	MiniMap,
@@ -16,6 +17,8 @@ import "@xyflow/react/dist/style.css";
 import { AppNode, NodeTypesEnum } from "../interface";
 import { CreateNode } from "../nodes/node-registry";
 import NodeComponent from "../nodes/custom-node";
+import DeletableEdge from "../edge/custom-edge";
+import { useTheme } from "next-themes";
 
 const snapGrid: [number, number] = [20, 20];
 
@@ -23,7 +26,12 @@ const nodeTypes = {
 	FlowScrap: NodeComponent,
 };
 
+const edgeTypes = {
+	default: DeletableEdge,
+};
+
 const FlowEditor = () => {
+	const { theme } = useTheme();
 	const reactFlowWrapper = useRef(null);
 	const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
 	const [edges, setEdges, onEdgesChange] = useNodesState([]);
@@ -72,10 +80,13 @@ const FlowEditor = () => {
 				onDragOver={onDragOver}
 				onConnect={onConnect}
 				nodeTypes={nodeTypes}
-			/>
-			<Controls />
-			<MiniMap />
-			<Background variant={BackgroundVariant.Dots} gap={12} />
+				edgeTypes={edgeTypes}
+				colorMode={theme as ColorMode}
+			>
+				<Controls />
+				<MiniMap />
+				<Background variant={BackgroundVariant.Dots} gap={12} />
+			</ReactFlow>
 		</React.Fragment>
 	);
 };

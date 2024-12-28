@@ -38,14 +38,15 @@ const NodeComponent = ({
 				label={label}
 				dragHandle={dragHandle}
 				iconColor={NodeIconColor[type as NodeTypesEnum]}
+				nodeId={id}
 			/>
 			<CardContent
 				className={`p-0 px-3 py-3 rounded-b-m bg-secondary dark:bg-card`}
 			>
-				{inputs.map((items: NodeInputProps, index: number) => (
+				{inputs?.map((items: NodeInputProps, index: number) => (
 					<NodeInput {...items} key={items.label + ":" + index} />
 				))}
-				{<NodeOutput {...output} />}
+				{output && <NodeOutput {...output} />}
 			</CardContent>
 		</Card>
 	);

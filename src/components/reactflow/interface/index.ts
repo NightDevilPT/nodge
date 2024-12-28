@@ -3,32 +3,37 @@ import { Node } from "@xyflow/react";
 export enum NodeTypesEnum {
 	EXTRACT_TEXT_FROM_ELEMENT = "extract-text-from-element",
 	EXTRACT_JSON_FROM_ELEMENT = "extract-json-from-element",
+	OUTPUT_ELEMENT = "output-element",
+	TEXT_ELEMENT = "text-element",
+	NUMBER_ELEMENT = "number-element"
 }
 
 export interface AppNodeData {
 	type: NodeTypesEnum;
 	label: string;
 	icon: React.ElementType;
-	inputs: NodeInputProps[];
-	output: NodeOutputProps;
+	inputs?: NodeInputProps[];
+	output?: NodeOutputProps;
 	execution?: () => void;
 	[key: string]: any;
 }
 
 export enum InputTypesEnum {
 	STRING = "STRING",
+	OUTPUT = "OUTPUT",
+	NUMBER = "NUMBER",
 }
 
 export interface NodeOutputProps {
 	label: string;
-	value: string;
+	value: string | number;
 }
 
 export interface NodeInputProps {
 	label: string;
 	type: InputTypesEnum;
-	value: string;
-	helperText: string;
+	value: string | number;
+	helperText?: string;
 	required: boolean;
 }
 

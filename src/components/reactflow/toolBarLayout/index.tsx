@@ -13,12 +13,13 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 const ToolBarLayout = () => {
+	const allItems = Object.keys(SidebarButtons);
 	return (
 		<div
 			className={`w-full h-full bg-background grid grid-cols-1 gap-2 place-content-start`}
 		>
-			<Accordion type="single" collapsible className="w-full">
-				{Object.keys(SidebarButtons).map(
+			<Accordion type="multiple" className="w-full space-y-2" defaultValue={allItems}>
+				{allItems.map(
 					(items: string, index: number) => {
 						return (
 							<AccordionItem

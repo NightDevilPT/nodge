@@ -5,7 +5,7 @@ import { ThemeProvider } from "./theme-provider";
 
 const RootProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<ThemeProvider attribute="class" defaultTheme="dark">
+		<ThemeProvider attribute="class" defaultTheme="light">
 			{children}
 		</ThemeProvider>
 	);
