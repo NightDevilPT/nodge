@@ -19,10 +19,10 @@ const NotFoundPage = () => {
 					404
 				</h1>
 				<p className={`text-2xl mt-4 text-gray-500`}>
-					Oops! We can't seem to find the page you're looking for.
+					Oops! We can&apos;t seem to find the page you&apos;re looking for.
 				</p>
 				<span className={`text-sm text-gray-500`}>
-					The resource you’re trying to access is unavailable or does
+					The resource you&apos;re trying to access is unavailable or does
 					not exist.
 				</span>
 			</div>
