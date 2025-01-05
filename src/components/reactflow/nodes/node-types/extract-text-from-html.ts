@@ -11,7 +11,10 @@ export const ExtractTextFromElement: AppNodeData = {
 			required: true,
 			type: InputTypesEnum.STRING,
 			value: "",
+			isEntryPoint:false,
 			helperText: "eg : http://www.google.com",
+			isConnectable:true,
+			name:'webUrl'
 		},
 	],
 	output: {

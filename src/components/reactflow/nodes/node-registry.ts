@@ -1,11 +1,20 @@
-import { AppNode, NodeTypesEnum, SidebarButtonProps } from "../interface";
+import {
+	AppNode,
+	AppNodeData,
+	NodeTypesEnum,
+	SidebarButtonProps,
+} from "../interface";
 import { ExtractTextFromElement } from "./node-types/extract-text-from-html";
 import { ExtractJsonFromElement } from "./node-types/extract-json-from-html";
 import { OutputNodeElement } from "./node-types/output-node";
 
 import { FaCode } from "react-icons/fa6";
 import { LuFileJson } from "react-icons/lu";
-import { MdOutlineInput, MdOutlineNumbers, MdOutlineOutput, MdOutlineTextFields } from "react-icons/md";
+import {
+	MdOutlineNumbers,
+	MdOutlineOutput,
+	MdOutlineTextFields,
+} from "react-icons/md";
 import { TextNodeElement } from "./node-types/text-node";
 import { NumberNodeElement } from "./node-types/number-node";
 
@@ -14,7 +23,7 @@ export const NodeRegistry = {
 	[NodeTypesEnum.EXTRACT_JSON_FROM_ELEMENT]: ExtractJsonFromElement,
 	[NodeTypesEnum.OUTPUT_ELEMENT]: OutputNodeElement,
 	[NodeTypesEnum.TEXT_ELEMENT]: TextNodeElement,
-	[NodeTypesEnum.NUMBER_ELEMENT]: NumberNodeElement
+	[NodeTypesEnum.NUMBER_ELEMENT]: NumberNodeElement,
 };
 
 export const NodeIconColor = {
@@ -58,11 +67,32 @@ export const SidebarButtons: { [key: string]: SidebarButtonProps[] } = {
 };
 
 export const CreateNode = (type: NodeTypesEnum): AppNode => {
-	return {
-		id: crypto.randomUUID(),
+	const nodeData: AppNodeData = NodeRegistry[type];
+	const nodeId: string = crypto.randomUUID();
+
+	const inputsWithHandles = nodeData?.inputs?.map((input) => ({
+		...input,
+		id: `${nodeId}:${crypto?.randomUUID()}`,
+	}));
+
+	const outputWithHandle = nodeData.output
+		? {
+				...nodeData.output,
+				id: `${nodeId}:${crypto?.randomUUID()}`,
+		  }
+		: undefined;
+
+	const newNode: AppNode = {
+		id: nodeId,
 		type: "FlowScrap",
 		dragHandle: ".drag-handle__custom",
 		position: { x: 0, y: 0 },
-		data: NodeRegistry[type],
+		data: {
+			...nodeData,
+			inputs: inputsWithHandles || [],
+			output: outputWithHandle,
+		},
 	};
+
+	return newNode;
 };

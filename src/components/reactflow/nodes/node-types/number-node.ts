@@ -11,6 +11,9 @@ export const NumberNodeElement: AppNodeData = {
 			required: true,
 			type: InputTypesEnum.NUMBER,
 			value: 0, // Default value for number input
+			isEntryPoint:false,
+			isConnectable:true,
+			name:'number'
 		},
 	],
 	output: {

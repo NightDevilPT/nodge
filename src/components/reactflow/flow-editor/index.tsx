@@ -62,7 +62,10 @@ const FlowEditor = () => {
 	);
 
 	const onConnect = useCallback(
-		(params: Connection) => setEdges((eds) => addEdge(params, eds)),
+		(params: Connection) => {
+			console.log(params,'CONNECTION PARAMS')
+			setEdges((eds) => addEdge(params, eds))
+		},
 		[]
 	);
 

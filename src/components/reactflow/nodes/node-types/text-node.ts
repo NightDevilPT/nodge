@@ -11,6 +11,9 @@ export const TextNodeElement: AppNodeData = {
 			required: true,
 			type: InputTypesEnum.STRING,
 			value: "",
+			isEntryPoint:false,
+			isConnectable:true,
+			name:'text'
 		},
 	],
 	output: {

@@ -12,6 +12,9 @@ export const ExtractJsonFromElement: AppNodeData = {
 			type: InputTypesEnum.STRING,
 			value: "",
 			helperText: "eg : http://www.google.com",
+			isEntryPoint:false,
+			isConnectable:true,
+			name:'webUrl'
 		},
 	],
 	output: {

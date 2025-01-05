@@ -25,16 +25,21 @@ export enum InputTypesEnum {
 }
 
 export interface NodeOutputProps {
+	id?:string;
 	label: string;
 	value: string | number;
 }
 
 export interface NodeInputProps {
+	id?:string;
 	label: string;
 	type: InputTypesEnum;
 	value: string | number;
 	helperText?: string;
 	required: boolean;
+	isConnectable?: boolean;
+	isEntryPoint:boolean;
+	name:string;
 }
 
 export interface AppNode extends Node {

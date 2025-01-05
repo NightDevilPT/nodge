@@ -44,7 +44,11 @@ const NodeComponent = ({
 				className={`p-0 px-3 py-3 rounded-b-m bg-secondary dark:bg-card`}
 			>
 				{inputs?.map((items: NodeInputProps, index: number) => (
-					<NodeInput {...items} key={items.label + ":" + index} />
+					<NodeInput
+						{...items}
+						key={items.label + ":" + index}
+						nodeId={id}
+					/>
 				))}
 				{output && <NodeOutput {...output} />}
 			</CardContent>
