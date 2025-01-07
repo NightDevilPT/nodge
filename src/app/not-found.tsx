@@ -10,7 +10,7 @@ const NotFoundPage = () => {
 
 	return (
 		<div
-			className={`w-full h-screen bg-gradient-to-tr text-white flex flex-col justify-center items-center space-y-6`}
+			className={`w-full h-full bg-gradient-to-tr text-white flex flex-col justify-center items-center space-y-6`}
 		>
 			<div className="text-center">
 				<h1

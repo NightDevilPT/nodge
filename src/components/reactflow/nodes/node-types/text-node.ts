@@ -1,23 +1,24 @@
-import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
 import { MdOutlineTextFields } from "react-icons/md";
+import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
 
-export const TextNodeElement: AppNodeData = {
-	label: "Text Element",
-	type: NodeTypesEnum.TEXT_ELEMENT,
+export const TEXT_NODE: AppNodeData = {
+	label: "Text",
+	type: NodeTypesEnum.TEXT_NODE,
 	icon: MdOutlineTextFields,
+	iconColor:'text-blue-500',
+	execution: function () {
+		console.log(this.inputs);
+	},
 	inputs: [
 		{
-			label: "Enter Text",
+			name: "text",
+			label: "Text Node",
 			required: true,
-			type: InputTypesEnum.STRING,
-			value: "",
-			isEntryPoint:false,
-			isConnectable:true,
-			name:'text'
+			value: "text",
+			inputType: InputTypesEnum.TEXT,
+			isEntryPoint: true,
+			isConnectable: true,
+			isShowHandle: false,
 		},
 	],
-	output: {
-		value: "",
-		label: "Output",
-	},
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { NodeIconColor, SidebarButtons } from "../nodes/node-registry";
+import { SidebarButtons } from "../nodes/node-registry";
 import {
 	Accordion,
 	AccordionContent,
@@ -34,6 +34,7 @@ const ToolBarLayout = () => {
 											label,
 											icon,
 											type,
+											iconColor
 										}: SidebarButtonProps,
 										sideBarIndex: number
 									) => {
@@ -42,6 +43,7 @@ const ToolBarLayout = () => {
 												label={label}
 												icon={icon}
 												type={type}
+												iconColor={iconColor}
 												key={label + ":" + sideBarIndex}
 											/>
 										);
@@ -62,6 +64,7 @@ export const ToolBarButton = ({
 	label,
 	icon: Icon,
 	type,
+	iconColor
 }: SidebarButtonProps) => {
 	const formatLabel = () => {
 		return label.replace(/-/g, " ").trim();
@@ -79,7 +82,7 @@ export const ToolBarButton = ({
 			className={`w-full p-0 px-3 cursor-pointer mb-3`}
 		>
 			<Button className={`flex w-full justify-start items-center gap-2`} variant={"outline"}>
-				<Icon className={`w-4 h-4 ${NodeIconColor[type]}`} />
+				<Icon className={`w-4 h-4 ${iconColor}`} />
 				<Label className={`capitalize cursor-pointer`}>{formatLabel()}</Label>
 			</Button>
 		</AccordionContent>

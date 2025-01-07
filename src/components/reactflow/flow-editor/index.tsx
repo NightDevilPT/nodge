@@ -16,9 +16,9 @@ import {
 import "@xyflow/react/dist/style.css";
 import { AppNode, NodeTypesEnum } from "../interface";
 import { CreateNode } from "../nodes/node-registry";
-import NodeComponent from "../nodes/custom-node";
 import DeletableEdge from "../edge/custom-edge";
 import { useTheme } from "next-themes";
+import NodeComponent from "../nodes/custom-node";
 
 const snapGrid: [number, number] = [20, 20];
 

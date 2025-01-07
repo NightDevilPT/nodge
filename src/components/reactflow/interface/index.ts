@@ -1,17 +1,23 @@
 import { Node } from "@xyflow/react";
 
 export enum NodeTypesEnum {
-	EXTRACT_TEXT_FROM_ELEMENT = "extract-text-from-element",
-	EXTRACT_JSON_FROM_ELEMENT = "extract-json-from-element",
-	OUTPUT_ELEMENT = "output-element",
-	TEXT_ELEMENT = "text-element",
-	NUMBER_ELEMENT = "number-element"
+	TEXT_NODE='TEXT_NODE'
 }
+
+type ValueTypes =
+	| string
+	| number
+	| object
+	| string[]
+	| number[]
+	| object[]
+	| null;
 
 export interface AppNodeData {
 	type: NodeTypesEnum;
 	label: string;
 	icon: React.ElementType;
+	iconColor:string;
 	inputs?: NodeInputProps[];
 	output?: NodeOutputProps;
 	execution?: () => void;
@@ -19,27 +25,30 @@ export interface AppNodeData {
 }
 
 export enum InputTypesEnum {
-	STRING = "STRING",
-	OUTPUT = "OUTPUT",
-	NUMBER = "NUMBER",
+	TEXT = "text",
+	FILE = "file",
+	TEXTAREA = "textarea",
+	PASSWORD = "password",
 }
 
 export interface NodeOutputProps {
-	id?:string;
+	id?: string;
 	label: string;
-	value: string | number;
+	value: ValueTypes;
 }
 
 export interface NodeInputProps {
-	id?:string;
+	id?: string;
+	name: string;
 	label: string;
-	type: InputTypesEnum;
-	value: string | number;
-	helperText?: string;
 	required: boolean;
-	isConnectable?: boolean;
-	isEntryPoint:boolean;
-	name:string;
+	helperText?: string;
+	value: ValueTypes;
+	inputType: InputTypesEnum;
+	supportFileType?: string[];
+	isEntryPoint: boolean;
+	isConnectable:boolean;
+	isShowHandle:boolean;
 }
 
 export interface AppNode extends Node {
@@ -49,5 +58,6 @@ export interface AppNode extends Node {
 export interface SidebarButtonProps {
 	label: string;
 	icon: React.ElementType;
+	iconColor:string;
 	type: NodeTypesEnum;
 }

@@ -1,47 +1,44 @@
-import { CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import React from "react";
 import { MdDelete, MdDragIndicator } from "react-icons/md";
 import { IoIosCopy } from "react-icons/io";
+
+import { cn } from "@/lib/utils";
+import { CardHeader, CardTitle } from "@/components/ui/card";
 import { useReactFlow } from "@xyflow/react";
 
-interface NodeHeaderProps {
-	label: string;
-	icon: React.ElementType;
+type NodeHeaderProps = {
+	nodeId: string;
 	iconColor: string;
-	dragHandle: string | undefined;
-	nodeId:string;
-}
+	icon: React.ElementType;
+	label: string;
+};
 
 const NodeHeader = ({
+	nodeId,
 	label,
 	icon: Icon,
-	dragHandle,
 	iconColor,
-	nodeId
 }: NodeHeaderProps) => {
 	const { getNodes, setNodes } = useReactFlow();
 
-    const handleDeleteNode = () => {
-        const updatedNodes = getNodes().filter((node) => node.id !== nodeId);
-        setNodes(updatedNodes);
-    };
+	const handleDeleteNode = () => {
+		const updatedNodes = getNodes().filter((node) => node.id !== nodeId);
+		setNodes(updatedNodes);
+	};
 
 	return (
-		<CardHeader
-			className={`min-w-80 p-0 px-3 py-3 rounded-t-md border-accent border-b-2`}
-		>
+		<CardHeader className={cn(`p-0 w-full`)}>
 			<CardTitle
-				className={`min-w-80 flex justify-between items-center gap-3`}
+				className={cn(
+					`p-0 w-full flex justify-between items-center gap-3`
+				)}
 			>
-				<div
-					className={`w-auto h-auto flex justify-start items-center gap-2`}
-				>
-					<Icon className={`w-4 h-4 ${iconColor}`} />
-					<Label className={`text-sm`}>{label}</Label>
+				<div className={`flex justify-center items-center gap-2`}>
+					<Icon className={iconColor} size={24} />
+					<span className={`p-0`}>{label}</span>
 				</div>
 				<div
-					className={`w-auto h-auto flex justify-between items-center gap-1`}
+					className={`w-auto h-auto flex justify-center items-center gap-2`}
 				>
 					<button className={`w-5 h-5`}>
 						<IoIosCopy className={`w-4 h-4 text-green-400`} />

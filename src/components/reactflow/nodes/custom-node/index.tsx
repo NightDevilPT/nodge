@@ -1,57 +1,32 @@
-import { NodeProps } from "@xyflow/react";
 import React from "react";
-import { AppNodeData, NodeInputProps, NodeTypesEnum } from "../../interface";
-import { Card, CardContent } from "@/components/ui/card";
+import { AppNode, AppNodeData } from "../../interface";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import NodeHeader from "./node-header";
-import NodeInput from "./node-input";
-import { NodeIconColor } from "../node-registry";
-import NodeOutput from "./node-output";
+import { NodeProps } from "@xyflow/react";
 
-const NodeComponent = ({
-	id,
-	data,
-	selected,
-	dragHandle,
-	isConnectable,
-	zIndex,
-	positionAbsoluteX,
-	positionAbsoluteY,
-	targetPosition,
-	sourcePosition,
-	dragging,
-}: NodeProps) => {
-	console.log(
-		id,
-		isConnectable,
-		zIndex,
-		positionAbsoluteX,
-		positionAbsoluteY,
-		targetPosition,
-		sourcePosition,
-		dragging
-	);
-	const { type, inputs, output, icon: Icon, label } = data as AppNodeData;
+const NodeComponent = ({ id, data, selected }: NodeProps) => {
+	const {
+		type,
+		inputs,
+		output,
+		icon: Icon,
+		label,
+		iconColor,
+	} = data as AppNodeData;
+
 	return (
-		<Card className={`rounded-md ${selected && "ring-2 ring-primary/80"}`}>
+		<Card
+			className={cn(
+				`p-3 bg-card rounded-md space-y-0 min-w-80 cursor-default`
+			)}
+		>
 			<NodeHeader
-				icon={Icon}
-				label={label}
-				dragHandle={dragHandle}
-				iconColor={NodeIconColor[type as NodeTypesEnum]}
 				nodeId={id}
+				label={label}
+				iconColor={iconColor}
+				icon={Icon}
 			/>
-			<CardContent
-				className={`p-0 px-3 py-3 rounded-b-m bg-secondary dark:bg-card`}
-			>
-				{inputs?.map((items: NodeInputProps, index: number) => (
-					<NodeInput
-						{...items}
-						key={items.label + ":" + index}
-						nodeId={id}
-					/>
-				))}
-				{output && <NodeOutput {...output} />}
-			</CardContent>
 		</Card>
 	);
 };
