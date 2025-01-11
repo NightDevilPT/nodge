@@ -1,6 +1,4 @@
-import NodgeLogo from "@/components/shared/logo";
 import NodgeCards from "@/components/shared/node-card";
-import NodgeBreadcrumb from "@/components/shared/nodeg-breadcrumb";
 import { DummCardData, NodeCardProps } from "@/interface/card.interface";
 
 export default function Home() {

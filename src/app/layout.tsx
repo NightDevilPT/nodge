@@ -1,9 +1,10 @@
+import "./globals.css";
+import '@xyflow/react/dist/style.css';
+
 import type { Metadata } from "next";
 import RootProvider from "@/components/providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import NodgeDynamicLayout from "@/components/shared/dynamic-layout";
-
-import "./globals.css";
 
 export const metadata: Metadata = {
 	title: "NodeFlow",

@@ -1,23 +1,19 @@
 import React from "react";
-import { MdDelete, MdDragIndicator } from "react-icons/md";
-import { IoIosCopy } from "react-icons/io";
-
-import { cn } from "@/lib/utils";
-import { CardHeader, CardTitle } from "@/components/ui/card";
 import { useReactFlow } from "@xyflow/react";
+import { NodeHeaderProps } from "../../interface";
+import { MdOutlineDragIndicator } from "react-icons/md";
 
-type NodeHeaderProps = {
-	nodeId: string;
-	iconColor: string;
-	icon: React.ElementType;
-	label: string;
-};
+import { CardHeader, CardTitle } from "@/components/ui/card";
 
 const NodeHeader = ({
 	nodeId,
 	label,
-	icon: Icon,
+	isCopy,
 	iconColor,
+	isDelete,
+	icon: Icon,
+	copyIcon: CopyIcon,
+	deleteIcon: DeleteIcon,
 }: NodeHeaderProps) => {
 	const { getNodes, setNodes } = useReactFlow();
 
@@ -27,30 +23,40 @@ const NodeHeader = ({
 	};
 
 	return (
-		<CardHeader className={cn(`p-0 w-full`)}>
-			<CardTitle
-				className={cn(
-					`p-0 w-full flex justify-between items-center gap-3`
-				)}
-			>
-				<div className={`flex justify-center items-center gap-2`}>
-					<Icon className={iconColor} size={24} />
-					<span className={`p-0`}>{label}</span>
-				</div>
+		<CardHeader className={`p-0 px-3`}>
+			<CardTitle className={`p-0 flex justify-between items-center`}>
 				<div
-					className={`w-auto h-auto flex justify-center items-center gap-2`}
+					className={`w-auto flex justify-center items-center gap-3`}
 				>
-					<button className={`w-5 h-5`}>
-						<IoIosCopy className={`w-4 h-4 text-green-400`} />
-					</button>
-					<button className={`w-5 h-5`} onClick={handleDeleteNode}>
-						<MdDelete className={`w-5 h-5 text-red-400`} />
-					</button>
+					<Icon className={`w-5 h-5 ${iconColor}`} />
+					<h3>{label}</h3>
+				</div>
+
+				<div
+					className={`w-auto flex justify-center items-center gap-2`}
+				>
+					{isCopy && CopyIcon && (
+						<button className={`w-4 h-4 `}>
+							<CopyIcon
+								className={`text-green-500 w-full h-full`}
+							/>
+						</button>
+					)}
+					{isDelete && DeleteIcon && (
+						<button
+							className={`w-5 h-5 `}
+							onClick={handleDeleteNode}
+						>
+							<DeleteIcon
+								className={`text-red-400 w-full h-full`}
+							/>
+						</button>
+					)}
 					<button
-						className={`w-5 h-5 cursor-grab drag-handle__custom`}
+						className={`w-5 h-5 drag-handle__custom cursor-grab`}
 					>
-						<MdDragIndicator
-							className={`w-5 h-5 text-card-foreground`}
+						<MdOutlineDragIndicator
+							className={`text-foreground w-full h-full`}
 						/>
 					</button>
 				</div>

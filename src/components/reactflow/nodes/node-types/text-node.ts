@@ -1,11 +1,19 @@
-import { MdOutlineTextFields } from "react-icons/md";
+import { IoIosCopy } from "react-icons/io";
+import { MdOutlineTextFields, MdDelete } from "react-icons/md";
+
 import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
 
 export const TEXT_NODE: AppNodeData = {
-	label: "Text",
 	type: NodeTypesEnum.TEXT_NODE,
-	icon: MdOutlineTextFields,
-	iconColor:'text-blue-500',
+	header: {
+		label: "Text",
+		isCopy: true,
+		isDelete: true,
+		iconColor: "text-blue-500",
+		copyIcon: IoIosCopy,
+		deleteIcon: MdDelete,
+		icon: MdOutlineTextFields,
+	},
 	execution: function () {
 		console.log(this.inputs);
 	},
@@ -13,12 +21,10 @@ export const TEXT_NODE: AppNodeData = {
 		{
 			name: "text",
 			label: "Text Node",
+			helperText: "Enter the text you want.",
 			required: true,
 			value: "text",
 			inputType: InputTypesEnum.TEXT,
-			isEntryPoint: true,
-			isConnectable: true,
-			isShowHandle: false,
 		},
 	],
 };

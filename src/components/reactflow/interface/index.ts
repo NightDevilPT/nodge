@@ -1,7 +1,11 @@
+import React from "react";
 import { Node } from "@xyflow/react";
 
 export enum NodeTypesEnum {
-	TEXT_NODE='TEXT_NODE'
+	TEXT_NODE = "TEXT_NODE",
+	NUMBER_NODE = "NUMBER_NODE",
+	FILE_NODE = "FILE_NODE",
+	URL_NODE = "URL_NODE",
 }
 
 type ValueTypes =
@@ -13,11 +17,20 @@ type ValueTypes =
 	| object[]
 	| null;
 
+export interface NodeHeaderProps {
+	nodeId?: string;
+	label: string;
+	isCopy: boolean;
+	iconColor: string;
+	isDelete: boolean;
+	icon: React.ElementType;
+	copyIcon?: React.ElementType;
+	deleteIcon?: React.ElementType;
+}
+
 export interface AppNodeData {
 	type: NodeTypesEnum;
-	label: string;
-	icon: React.ElementType;
-	iconColor:string;
+	header: NodeHeaderProps;
 	inputs?: NodeInputProps[];
 	output?: NodeOutputProps;
 	execution?: () => void;
@@ -26,9 +39,11 @@ export interface AppNodeData {
 
 export enum InputTypesEnum {
 	TEXT = "text",
+	NUMBER = "number",
 	FILE = "file",
 	TEXTAREA = "textarea",
 	PASSWORD = "password",
+	URL = "url"
 }
 
 export interface NodeOutputProps {
@@ -45,10 +60,7 @@ export interface NodeInputProps {
 	helperText?: string;
 	value: ValueTypes;
 	inputType: InputTypesEnum;
-	supportFileType?: string[];
-	isEntryPoint: boolean;
-	isConnectable:boolean;
-	isShowHandle:boolean;
+	onChange?: (value: ValueTypes) => void;
 }
 
 export interface AppNode extends Node {
@@ -58,6 +70,6 @@ export interface AppNode extends Node {
 export interface SidebarButtonProps {
 	label: string;
 	icon: React.ElementType;
-	iconColor:string;
+	iconColor: string;
 	type: NodeTypesEnum;
 }

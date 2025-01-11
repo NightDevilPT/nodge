@@ -1,7 +1,8 @@
 import React from "react";
+import { ReactFlowProvider } from "@xyflow/react";
+
 import FlowEditor from "./flow-editor";
 import ToolBarLayout from "./toolBarLayout";
-import { ReactFlowProvider } from "@xyflow/react";
 
 const ReactFlowSetup = () => {
 	return (
@@ -13,7 +14,7 @@ const ReactFlowSetup = () => {
 					<h1 className={`text-xl`}>Workflow 1</h1>
 				</div>
 				<div
-					className={`w-full h-full grid grid-cols-[350px,_1fr] gap-2`}
+					className={`w-full h-full grid grid-cols-[320px,_1fr] gap-2`}
 				>
 					<div
 						className={`w-full h-full border-r-[1px] border-b-secondary bg-background p-3`}

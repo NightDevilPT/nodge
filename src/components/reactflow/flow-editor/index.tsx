@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import React, { useCallback, useRef } from "react";
 import {
 	addEdge,
@@ -13,12 +14,10 @@ import {
 	useNodesState,
 	useReactFlow,
 } from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
-import { AppNode, NodeTypesEnum } from "../interface";
-import { CreateNode } from "../nodes/node-registry";
 import DeletableEdge from "../edge/custom-edge";
-import { useTheme } from "next-themes";
 import NodeComponent from "../nodes/custom-node";
+import { CreateNode } from "../nodes/node-registry";
+import { AppNode, NodeTypesEnum } from "../interface";
 
 const snapGrid: [number, number] = [20, 20];
 
