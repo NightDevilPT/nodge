@@ -20,9 +20,7 @@ export default function RootLayout({
 		<html lang="en" suppressHydrationWarning>
 			<body className={``}>
 				<RootProvider>
-					<NodgeDynamicLayout>
-						{children}
-					</NodgeDynamicLayout>
+					{children}
 				</RootProvider>
 				<SpeedInsights />
 			</body>
