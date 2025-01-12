@@ -9,7 +9,7 @@ export interface MetaInfo {
 
 export interface CommonApiResponse<T> {
 	data: T;
-	meta: MetaInfo;
+	meta: MetaInfo | null;
 	message?: string;
 	status?: number;
 }

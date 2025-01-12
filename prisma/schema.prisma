@@ -21,30 +21,32 @@ enum Status {
 }
 
 model User {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  username    String
-  email       String   @unique
-  isVerified  Boolean  @default(false)
-  token       String?
-  provider    Provider @default(CREDENTIAL)
-  password    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  profile     Profile? @relation(name: "ProfileToUser")
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  username     String
+  email        String    @unique
+  isVerified   Boolean   @default(false)
+  otp          Int?
+  otpExpireAt  DateTime?
+  provider     Provider  @default(CREDENTIAL)
+  password     String?
+  refreshToken String?   @default("")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  profile      Profile?  @relation(name: "ProfileToUser")
 }
 
 model Profile {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
   firstName   String
   lastName    String
   phoneNumber String?
   avatar      String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  user        User          @relation(name: "ProfileToUser", fields: [userId], references: [id])
-  userId      String        @unique @db.ObjectId
-  credentials Credential[]  @relation(name: "CredentialToProfile")
-  workflows   Workflow[]    @relation(name: "WorkflowToProfile")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  user        User         @relation(name: "ProfileToUser", fields: [userId], references: [id])
+  userId      String       @unique @db.ObjectId
+  credentials Credential[] @relation(name: "CredentialToProfile")
+  workflows   Workflow[]   @relation(name: "WorkflowToProfile")
 }
 
 model Credential {
@@ -58,13 +60,13 @@ model Credential {
 }
 
 model Workflow {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  nodes     Json
-  edges     Json
-  description String? @default("")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  profile   Profile  @relation(name: "WorkflowToProfile", fields: [profileId], references: [id])
-  profileId String   @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  nodes       Json
+  edges       Json
+  description String?  @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  profile     Profile  @relation(name: "WorkflowToProfile", fields: [profileId], references: [id])
+  profileId   String   @db.ObjectId
 }

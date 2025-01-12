@@ -1,421 +1,384 @@
-File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\custom-node\index.tsx
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\app\api\user\forget\route.ts
 Contents:
-import { NodeProps } from "@xyflow/react";
-import React from "react";
-import { AppNodeData, NodeInputProps, NodeTypesEnum } from "../../interface";
-import { Card, CardContent } from "@/components/ui/card";
-import NodeHeader from "./node-header";
-import NodeInput from "./node-input";
-import { NodeIconColor } from "../node-registry";
-import NodeOutput from "./node-output";
+import { NextRequest, NextResponse } from "next/server";
 
-const NodeComponent = ({
-	id,
-	data,
-	selected,
-	dragHandle,
-	isConnectable,
-	zIndex,
-	positionAbsoluteX,
-	positionAbsoluteY,
-	targetPosition,
-	sourcePosition,
-	dragging,
-}: NodeProps) => {
-	console.log(
-		id,
-		isConnectable,
-		zIndex,
-		positionAbsoluteX,
-		positionAbsoluteY,
-		targetPosition,
-		sourcePosition,
-		dragging
-	);
-	const { type, inputs, output, icon: Icon, label } = data as AppNodeData;
-	return (
-		<Card className={`rounded-md ${selected && "ring-2 ring-primary/80"}`}>
-			<NodeHeader
-				icon={Icon}
-				label={label}
-				dragHandle={dragHandle}
-				iconColor={NodeIconColor[type as NodeTypesEnum]}
-				nodeId={id}
-			/>
-			<CardContent
-				className={`p-0 px-3 py-3 rounded-b-m bg-secondary dark:bg-card`}
-			>
-				{inputs?.map((items: NodeInputProps, index: number) => (
-					<NodeInput {...items} key={items.label + ":" + index} />
-				))}
-				{output && <NodeOutput {...output} />}
-			</CardContent>
-		</Card>
-	);
-};
+import prisma from "@/lib/prisma-client";
+import { config } from "@/components/config";
+import { emailProviderFactory } from "@/services/email-provider.service";
+import { getOtpEmailTemplate } from "@/templates/otp-mail.template";
+import { generateOtp } from "@/lib/generate-otp";
 
-export default NodeComponent;
 
---------------------------------------------------
+export async function POST(request: NextRequest) {
+  try {
+    const { email } = await request.json();
 
-File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\custom-node\node-header.tsx
-Contents:
-import { CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import React from "react";
-import { MdDelete, MdDragIndicator } from "react-icons/md";
-import { IoIosCopy } from "react-icons/io";
-import { useReactFlow } from "@xyflow/react";
+    // Validate email field
+    if (!email) {
+      return NextResponse.json(
+        { message: "Email is required." },
+        { status: 400 }
+      );
+    }
 
-interface NodeHeaderProps {
-	label: string;
-	icon: React.ElementType;
-	iconColor: string;
-	dragHandle: string | undefined;
-	nodeId:string;
-}
+    // Check if the user exists
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return NextResponse.json(
+        { message: "User with this email does not exist." },
+        { status: 404 }
+      );
+    }
 
-const NodeHeader = ({
-	label,
-	icon: Icon,
-	dragHandle,
-	iconColor,
-	nodeId
-}: NodeHeaderProps) => {
-	const { getNodes, setNodes } = useReactFlow();
+    // Generate a new OTP and expiration time
+    const otp = generateOtp();
+    const otpExpireAt = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
 
-    const handleDeleteNode = () => {
-        const updatedNodes = getNodes().filter((node) => node.id !== nodeId);
-        setNodes(updatedNodes);
+    // Update the OTP and expiry time in the database
+    await prisma.user.update({
+      where: { email },
+      data: {
+        otp,
+        otpExpireAt,
+      },
+    });
+
+    // Configure email transporter and send the OTP email
+    const transporter = emailProviderFactory("gmail");
+    const emailOptions = {
+      from: config.emailId,
+      to: email,
+      subject: "Password Reset OTP",
+      html: getOtpEmailTemplate(user.username, otp, new Date().getFullYear().toString()),
     };
 
-	return (
-		<CardHeader
-			className={`min-w-80 p-0 px-3 py-3 rounded-t-md border-accent border-b-2`}
-		>
-			<CardTitle
-				className={`min-w-80 flex justify-between items-center gap-3`}
-			>
-				<div
-					className={`w-auto h-auto flex justify-start items-center gap-2`}
-				>
-					<Icon className={`w-4 h-4 ${iconColor}`} />
-					<Label className={`text-sm`}>{label}</Label>
-				</div>
-				<div
-					className={`w-auto h-auto flex justify-between items-center gap-1`}
-				>
-					<button className={`w-5 h-5`}>
-						<IoIosCopy className={`w-4 h-4 text-green-400`} />
-					</button>
-					<button className={`w-5 h-5`} onClick={handleDeleteNode}>
-						<MdDelete className={`w-5 h-5 text-red-400`} />
-					</button>
-					<button
-						className={`w-5 h-5 cursor-grab drag-handle__custom`}
-					>
-						<MdDragIndicator
-							className={`w-5 h-5 text-card-foreground`}
-						/>
-					</button>
-				</div>
-			</CardTitle>
-		</CardHeader>
-	);
-};
+    await transporter.sendMail(emailOptions);
 
-export default NodeHeader;
+    return NextResponse.json(
+      { message: "Password reset OTP has been sent to your email." },
+      { status: 200 }
+    );
+
+  } catch (error) {
+    console.error("Error in forgot password:", error);
+    return NextResponse.json(
+      { message: "An internal server error occurred. Please try again later." },
+      { status: 500 }
+    );
+  }
+}
 
 --------------------------------------------------
 
-File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\custom-node\node-input.tsx
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\app\api\user\register\route.ts
 Contents:
-import React from "react";
-import { InputTypesEnum, NodeInputProps } from "../../interface";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Handle, Position } from "@xyflow/react";
+import bcrypt from "bcryptjs";
+import { NextRequest, NextResponse } from "next/server";
 
-const NodeInput = ({
-	label,
-	type,
-	value,
-	helperText,
-	required,
-}: NodeInputProps) => {
-	
-	if (type === InputTypesEnum.OUTPUT) {
-		return (
-			<div
-				className={`w-full h-auto grid grid-cols-1 gap-1 relative rounded-b-md`}
-			>
-				<Handle
-					type={"target"}
-					position={Position.Left}
-					className={`!w-3 !h-3 !rounded-full !bg-green-500 absolute !-left-3.5`}
-				/>
-				<Label className={`text-secondary-foreground pb-2`}>
-					Output
-				</Label>
-				<Label className={`text-secondary-foreground dark:bg-accent px-3 py-2 rounded-md bg-gray-200`}>
-					{value}
-				</Label>
-			</div>
+import prisma from "@/lib/prisma-client";
+import { config } from "@/components/config";
+import { generateOtp } from "@/lib/generate-otp";
+import { CreateUserRequest } from "@/interface/user.interface";
+import { getOtpEmailTemplate } from "@/templates/otp-mail.template";
+import { emailProviderFactory } from "@/services/email-provider.service";
+
+export async function POST(request: NextRequest) {
+	try {
+		// Extract request body
+		const { username, email, password, provider } =
+			(await request.json()) as CreateUserRequest;
+
+		// Validate required fields
+		if (!username || !email || !password || !provider) {
+			return NextResponse.json(
+				{ message: "All fields are required." },
+				{ status: 400 }
+			);
+		}
+
+		// Check if user already exists
+		const existingUser = await prisma.user.findUnique({ where: { email } });
+		if (existingUser) {
+			return NextResponse.json(
+				{ message: "An account with this email already exists." },
+				{ status: 409 }
+			);
+		}
+
+		// Hash the password securely
+		const hashedPassword = await bcrypt.hash(password, 10);
+		const otp = generateOtp(); // Generate OTP for email verification
+		const currentYear = new Date().getFullYear().toString();
+
+		// Create the new user record in the database
+		await prisma.user.create({
+			data: {
+				username,
+				email,
+				password: hashedPassword,
+				provider,
+				otp,
+				otpExpireAt: new Date(Date.now() + 10 * 60 * 1000), // OTP expires in 10 minutes
+			},
+		});
+
+		// Configure email transporter for sending verification email
+		const transporter = emailProviderFactory("gmail");
+		const emailOptions = {
+			from: config.emailId,
+			to: email,
+			subject: "Email Verification",
+			html: getOtpEmailTemplate(username, otp, currentYear),
+		};
+
+		// Send verification email
+		await transporter.sendMail(emailOptions);
+
+		return NextResponse.json(
+			{
+				message:
+					"User created successfully. A verification email has been sent.",
+			},
+			{ status: 201 }
+		);
+	} catch (error) {
+		console.error("Error in user registration:", error);
+		return NextResponse.json(
+			{
+				message:
+					"An internal server error occurred. Please try again later.",
+			},
+			{ status: 500 }
 		);
 	}
-
-	return (
-		<div
-			className={`w-full h-auto grid grid-cols-1 gap-1 relative rounded-b-md`}
-		>
-			<Handle
-				type={"target"}
-				position={Position.Left}
-				className={`!w-3 !h-3 !rounded-full !bg-yellow-400 absolute !-left-3.5`}
-			/>
-			<Label htmlFor={label} className={`text-sm text-foreground`}>
-				{label} {required && <span className={`text-red-500`}>*</span>}
-			</Label>
-			<Input
-				type={type}
-				id={label}
-				placeholder={label}
-				className={`text-foreground bg-background`}
-			/>
-			{helperText && (
-				<Label className={`text-xs px-1 text-gray-500`}>
-					{helperText}
-				</Label>
-			)}
-		</div>
-	);
-};
-
-export default NodeInput;
+}
 
 --------------------------------------------------
 
-File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\custom-node\node-output.tsx
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\app\api\user\update-password\route.ts
 Contents:
-import React from "react";
-import { NodeOutputProps } from "../../interface";
-import { Label } from "@/components/ui/label";
-import { Handle, Position } from "@xyflow/react";
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma-client";
+import bcrypt from "bcryptjs";
 
-const NodeOutput = ({
-	label,
-	value,
-}: NodeOutputProps) => {
-	console.log(value)
-	return (
-		<div className={`w-full h-auto grid grid-cols-1 gap-1 relative rounded-b-md mt-2`}>
-			<Handle type={"source"} position={Position.Right} className={`!w-3 !h-3 !rounded-full !bg-green-400 absolute !-right-3.5`} />
-			<Label htmlFor={label} className={`w-full text-right text-xs text-foreground`}>
-				{label}
-			</Label>
-		</div>
-	);
-};
+export async function POST(request: NextRequest) {
+	try {
+		// Extract request body
+		const { email, otp, newPassword } = await request.json();
 
-export default NodeOutput;
+		// Validate required fields
+		if (!email || !otp || !newPassword) {
+			return NextResponse.json(
+				{ message: "Email, OTP, and new password are required." },
+				{ status: 400 }
+			);
+		}
+
+		// Find the user by email
+		const user = await prisma.user.findFirst({
+			where: {
+				email,
+				otp,
+			},
+		});
+
+		if (!user) {
+			return NextResponse.json(
+				{ message: "Invalid OTP or user not found." },
+				{ status: 404 }
+			);
+		}
+
+		// Check if OTP has expired
+		if (!user.otpExpireAt || user.otpExpireAt < new Date()) {
+			return NextResponse.json(
+				{ message: "OTP has expired. Please request a new OTP." },
+				{ status: 410 }
+			);
+		}
+
+		// Hash the new password
+		const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+		// Update the password and clear OTP fields
+		await prisma.user.update({
+			where: { email },
+			data: {
+				password: hashedPassword,
+				otp: null, // Clear OTP after successful update
+				otpExpireAt: null,
+			},
+		});
+
+		return NextResponse.json(
+			{ message: "Password updated successfully." },
+			{ status: 200 }
+		);
+	} catch (error) {
+		console.error("Error in updating password:", error);
+		return NextResponse.json(
+			{
+				message:
+					"An internal server error occurred. Please try again later.",
+			},
+			{ status: 500 }
+		);
+	}
+}
 
 --------------------------------------------------
 
-File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-registry.ts
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\app\api\user\verify\resend-verification\route.ts
 Contents:
-import { AppNode, NodeTypesEnum, SidebarButtonProps } from "../interface";
-import { ExtractTextFromElement } from "./node-types/extract-text-from-html";
-import { ExtractJsonFromElement } from "./node-types/extract-json-from-html";
-import { OutputNodeElement } from "./node-types/output-node";
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma-client";
+import { emailProviderFactory } from "@/services/email-provider.service";
+import { getOtpEmailTemplate } from "@/templates/otp-mail.template";
+import { config } from "@/components/config";
+import { generateOtp } from "@/lib/generate-otp";
 
-import { FaCode } from "react-icons/fa6";
-import { LuFileJson } from "react-icons/lu";
-import { MdOutlineInput, MdOutlineNumbers, MdOutlineOutput, MdOutlineTextFields } from "react-icons/md";
-import { TextNodeElement } from "./node-types/text-node";
-import { NumberNodeElement } from "./node-types/number-node";
+export async function POST(request: NextRequest) {
+	try {
+		// Extract request body
+		const { email } = await request.json();
 
-export const NodeRegistry = {
-	[NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT]: ExtractTextFromElement,
-	[NodeTypesEnum.EXTRACT_JSON_FROM_ELEMENT]: ExtractJsonFromElement,
-	[NodeTypesEnum.OUTPUT_ELEMENT]: OutputNodeElement,
-	[NodeTypesEnum.TEXT_ELEMENT]: TextNodeElement,
-	[NodeTypesEnum.NUMBER_ELEMENT]: NumberNodeElement
-};
+		// Validate email field
+		if (!email) {
+			return NextResponse.json(
+				{ message: "Email is required." },
+				{ status: 400 }
+			);
+		}
 
-export const NodeIconColor = {
-	[NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT]: "text-orange-500",
-	[NodeTypesEnum.EXTRACT_JSON_FROM_ELEMENT]: "text-yellow-500",
-	[NodeTypesEnum.OUTPUT_ELEMENT]: "text-green-500",
-	[NodeTypesEnum.TEXT_ELEMENT]: "text-blue-500",
-	[NodeTypesEnum.NUMBER_ELEMENT]: "text-purple-500",
-};
+		// Check if the user exists
+		const user = await prisma.user.findUnique({ where: { email } });
+		if (!user) {
+			return NextResponse.json(
+				{ message: "User with this email does not exist." },
+				{ status: 404 }
+			);
+		}
 
-export const SidebarButtons: { [key: string]: SidebarButtonProps[] } = {
-	General: [
-		{
-			label: NodeTypesEnum.TEXT_ELEMENT,
-			icon: MdOutlineTextFields,
-			type: NodeTypesEnum.TEXT_ELEMENT,
-		},
-		{
-			label: NodeTypesEnum.OUTPUT_ELEMENT,
-			icon: MdOutlineOutput,
-			type: NodeTypesEnum.OUTPUT_ELEMENT,
-		},
-		{
-			label: NodeTypesEnum.NUMBER_ELEMENT,
-			icon: MdOutlineNumbers,
-			type: NodeTypesEnum.NUMBER_ELEMENT,
-		},
-	],
-	Extraction: [
-		{
-			label: NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT,
-			icon: FaCode,
-			type: NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT,
-		},
-		{
-			label: NodeTypesEnum.EXTRACT_JSON_FROM_ELEMENT,
-			icon: LuFileJson,
-			type: NodeTypesEnum.EXTRACT_JSON_FROM_ELEMENT,
-		},
-	],
-};
+		// Check if the user is already verified
+		if (user.isVerified) {
+			return NextResponse.json(
+				{ message: "Email is already verified." },
+				{ status: 400 }
+			);
+		}
 
-export const CreateNode = (type: NodeTypesEnum): AppNode => {
-	return {
-		id: crypto.randomUUID(),
-		type: "FlowScrap",
-		dragHandle: ".drag-handle__custom",
-		position: { x: 0, y: 0 },
-		data: NodeRegistry[type],
-	};
-};
+		// Generate a new OTP and expiration time
+		const otp = generateOtp();
+		const otpExpireAt = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
+
+		// Update the OTP and expiry time in the database
+		await prisma.user.update({
+			where: { email },
+			data: {
+				otp,
+				otpExpireAt,
+			},
+		});
+
+		// Configure email transporter and send the OTP email
+		const transporter = emailProviderFactory("gmail");
+		const emailOptions = {
+			from: config.emailId,
+			to: email,
+			subject: "Resend Email Verification OTP",
+			html: getOtpEmailTemplate(
+				user.username,
+				otp,
+				new Date().getFullYear().toString()
+			),
+		};
+
+		await transporter.sendMail(emailOptions);
+
+		return NextResponse.json(
+			{
+				message:
+					"Verification email has been resent. Please check your inbox.",
+			},
+			{ status: 200 }
+		);
+	} catch (error) {
+		console.error("Error in resend verification:", error);
+		return NextResponse.json(
+			{
+				message:
+					"An internal server error occurred. Please try again later.",
+			},
+			{ status: 500 }
+		);
+	}
+}
 
 --------------------------------------------------
 
-File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-types\extract-json-from-html.ts
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\app\api\user\verify\route.ts
 Contents:
-import { LuFileJson } from "react-icons/lu";
-import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma-client";
 
-export const ExtractJsonFromElement: AppNodeData = {
-	label: "Extract Json From Element",
-	type: NodeTypesEnum.EXTRACT_JSON_FROM_ELEMENT,
-	icon: LuFileJson,
-	inputs: [
-		{
-			label: "Enter Web Url",
-			required: true,
-			type: InputTypesEnum.STRING,
-			value: "",
-			helperText: "eg : http://www.google.com",
-		},
-	],
-	output: {
-		value: "",
-		label: "Extracted Text",
-	},
-};
+export async function POST(request: NextRequest) {
+  try {
+    // Extract request body
+    const { email, otp } = await request.json();
 
---------------------------------------------------
+    // Validate required fields
+    if (!email || !otp) {
+      return NextResponse.json(
+        { message: "Email and OTP are required." },
+        { status: 400 }
+      );
+    }
 
-File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-types\extract-text-from-html.ts
-Contents:
-import { FaCode } from "react-icons/fa6";
-import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
+    // Find the user by email and otp
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email,
+        otp: otp,
+      },
+    });
 
-export const ExtractTextFromElement: AppNodeData = {
-	label: "Extract Text From Element",
-	type: NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT,
-	icon: FaCode,
-	inputs: [
-		{
-			label: "Enter Web Url",
-			required: true,
-			type: InputTypesEnum.STRING,
-			value: "",
-			helperText: "eg : http://www.google.com",
-		},
-	],
-	output: {
-		value: "",
-		label: "Extracted Text",
-	},
-};
+    if (!user) {
+      return NextResponse.json(
+        { message: "Invalid OTP or user not found." },
+        { status: 404 }
+      );
+    }
 
---------------------------------------------------
+    // Check if OTP has expired
+    if (!user.otpExpireAt || user.otpExpireAt < new Date()) {
+      return NextResponse.json(
+        { message: "OTP has expired. Please request a new verification email." },
+        { status: 410 }
+      );
+    }
 
-File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-types\number-node.ts
-Contents:
-import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
-import { MdOutlineNumbers } from "react-icons/md";
+    // Update the user's verification status
+    await prisma.user.update({
+      where: { email: email },
+      data: {
+        isVerified: true,
+        otp: null, // Clear OTP after successful verification
+        otpExpireAt: null,
+      },
+    });
 
-export const NumberNodeElement: AppNodeData = {
-	label: "Number Element",
-	type: NodeTypesEnum.NUMBER_ELEMENT,
-	icon: MdOutlineNumbers,
-	inputs: [
-		{
-			label: "Enter Number",
-			required: true,
-			type: InputTypesEnum.NUMBER,
-			value: 0, // Default value for number input
-		},
-	],
-	output: {
-		value: 0,
-		label: "Output",
-	},
-};
-
---------------------------------------------------
-
-File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-types\output-node.ts
-Contents:
-import { LuFileJson } from "react-icons/lu";
-import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
-import { MdOutlineOutput } from "react-icons/md";
-
-export const OutputNodeElement: AppNodeData = {
-	label: "Output Element",
-	type: NodeTypesEnum.OUTPUT_ELEMENT,
-	icon: MdOutlineOutput,
-	inputs: [
-		{
-			label: "Enter Web Url",
-			required: true,
-			type: InputTypesEnum.OUTPUT,
-			value: "",
-			helperText: "eg : http://www.google.com",
-		},
-	]
-};
-
---------------------------------------------------
-
-File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-types\text-node.ts
-Contents:
-import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
-import { MdOutlineTextFields } from "react-icons/md";
-
-export const TextNodeElement: AppNodeData = {
-	label: "Text Element",
-	type: NodeTypesEnum.TEXT_ELEMENT,
-	icon: MdOutlineTextFields,
-	inputs: [
-		{
-			label: "Enter Text",
-			required: true,
-			type: InputTypesEnum.STRING,
-			value: "",
-		},
-	],
-	output: {
-		value: "",
-		label: "Output",
-	},
-};
+    return NextResponse.json(
+      { message: "Email verified successfully." },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error during verification:", error);
+    return NextResponse.json(
+      { message: "An internal server error occurred. Please try again later." },
+      { status: 500 }
+    );
+  }
+}
 
 --------------------------------------------------
 

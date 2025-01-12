@@ -15,7 +15,6 @@ export interface CreateUserRequest {
 	email: string;
 	password: string;
 	provider?: "GITHUB" | "CREDENTIAL" | "GOOGLE";
-	token?: string;
 }
 
 export interface UpdateUserRequest {

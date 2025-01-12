@@ -19,7 +19,6 @@ export interface CreateProfileRequest {
 	lastName: string;
 	phoneNumber?: string;
 	avatar?: string;
-	userId: string;
 }
 
 export interface UpdateProfileRequest {
