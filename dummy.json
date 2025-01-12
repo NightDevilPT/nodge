@@ -1,0 +1,200 @@
+[
+	{
+		"page_content": "Hello friends, you are very welcome to a new video and today's video is about our next principle which is interface aggregation and this is a very important principle if you want to write maintainable code, if you want to decouple your code  It is in your application, so it is very important to know this principle, so this principle is very simple to understand and whenever we",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=0s",
+			"start_seconds": 0,
+			"start_timestamp": "00:00:00",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "see the example, it will become even more simple, okay, so before starting this video, before this  We have already made a video on three principles, so you will find the link of its playlist inside the description, quickly go and watch it first, only after that watch this video of the principle and before starting the video, if you want to watch this video  If you haven't liked it yet, then quickly like it, leave a comment and if you haven't subscribed yet, then subscribe as well. Let's start now. So",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=30s",
+			"start_seconds": 30,
+			"start_timestamp": "00:00:30",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "here inside Wikipedia, you can see that the interface is based on the Seg Gun Principle. what does this principle say look a this principle states that no code should be forced to  Depend on methods, it doesn't use, it is so simple, see, what they are saying is that there should not be such methods in your code which are not being used but there is a need to implement them, does this ever happen, you know, it happens when  Whenever we implement an interface, whether we need",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=60s",
+			"start_seconds": 60,
+			"start_timestamp": "00:01:00",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "all the methods in that interface or not, we still have to implement them and this is a violation of the interface aggregation principle. Let's first look at the examples here. And after seeing the example you will completely understand how it is violated and how it can be solved. Let's go inside the code editor and understand here that first of all let's take an example and understand it. That we have an interface and I hope that you",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=90s",
+			"start_seconds": 90,
+			"start_timestamp": "00:01:30",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "know about the interface, if you don't know then I have made a series on object oriented programming, so you can go and see it and if you want to know more details  If you want to learn about interface then definitely comment me. Tell me I will definitely make a video on that too, so let us understand now that we are making a document manager, a software with which we can do what we want, we can manage our documents, so let's do one thing here, first of all we  Let's create an interface, okay,",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=120s",
+			"start_seconds": 120,
+			"start_timestamp": "00:02:00",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "and name it Document Manager, and what will be inside it, there will be some methods inside it, like open document, close document, save document, scan document, write, these are all the methods, and for now, for simplicity, let's leave it here. But we will not receive any parameter, we will keep it exactly like this, maybe we will have to put void here, let's put void to mean that it is not returning anything, so let's do it like this here",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=150s",
+			"start_seconds": 150,
+			"start_timestamp": "00:02:30",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "and here it is, okay, this is our interface. Interface means a contract, all the classes that will implement this interface will have to implement all these methods. Okay, now let's create a class here and see how it can be implemented. So let's create a class here and  Let's do the basic editor for example ok  Yes we are editing a document, so here we first create a basic editor and implement it with the document manager,",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=180s",
+			"start_seconds": 180,
+			"start_timestamp": "00:03:00",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "okay so you can see that we have to implement all the methods here, if we don't do it for example If we do not do this, we will get an error that class Basic Editor incorrectly implements interface Document Manager. This means that we will have to implement all the methods in this class. Okay, we have implemented it this way, but now see the violation here, let us understand. That is our basic editor cannot",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=210s",
+			"start_seconds": 210,
+			"start_timestamp": "00:03:30",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "do all these functionalities of scan document, okay it cannot do it means it will not be used here so what is done normally is that it is skipped here, that means  don't do anything console dot log and do it here a don't don't do anything okay this is how it happens so now here you can see the violation that our definition was saying",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=240s",
+			"start_seconds": 240,
+			"start_timestamp": "00:04:00",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "in Wikipedia that your code should be something like this  Also do not force any method which is not being used in it, but here we are being forced, we need to implement this method by force because what we have done is we have implemented the document manager  Now you can see that here there is a direct violation of our ISP, that is, of the Interface Aggregation Principle, so how can this be solved now? So there is a very",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=270s",
+			"start_seconds": 270,
+			"start_timestamp": "00:04:30",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "simple way to solve this. What do we do in this? Interface in this. Let's segment it, which means we divide it into smaller interfaces, so here you can make an interface for example document opener, okay, let's make some such interface and in which only open document will be the method and after that here  And also we can create interfaces like for",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=300s",
+			"start_seconds": 300,
+			"start_timestamp": "00:05:00",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "example interface and what else was there, here we see the document from close document so here we do document closure, okay so done like this after that here is the save document inside it here But we have done the document scanner in this way, we have created four interfaces here. Okay, it is not always necessary that you create an interface for each method, here this is just an example, if we want, we can create an interface for these three",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=330s",
+			"start_seconds": 330,
+			"start_timestamp": "00:05:30",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "methods. We can create an interface which has common methods which all our classes and editors will be able to implement and any specific methods we could keep separately inside the interface, right, here it is not necessary that every method Remember that we have to create different interfaces for this, okay, now how will we use it here, this is a basic editor, so what do we have to do inside it, if we don't need the scanned document then we just remove it, okay,",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=360s",
+			"start_seconds": 360,
+			"start_timestamp": "00:06:00",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "but here  We need three interfaces - open document, close document, save document. So what can we do inside type script? We can implement multiple interfaces. For example, here we can do document opener, after that give a comma, we can do it like this. can do document closure Document Saver Okay, now you can see that this is a basic editor and no force is being used inside it which was the scan",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=390s",
+			"start_seconds": 390,
+			"start_timestamp": "00:06:30",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "method because that is a separate interface. Whenever a new class is created, for example, Advanced Editor Okay, Editor and this here  But it can implement it and it will implement all the interfaces here, so we will also implement scanned documents in it and that is fine because that advanced editor can also scan, so here we can add any force  If you are not doing it, then in",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=420s",
+			"start_seconds": 420,
+			"start_timestamp": "00:07:00",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "this way you can see that the interface sega gun works on this principle, okay, these types of things, if you have seen the UI elements in mobile development, in the UI tool kit  A lot of things of this type are used wherever we implement multiple interfaces. So friends, this was our interface segment principle and I hope that you must have",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=450s",
+			"start_seconds": 450,
+			"start_timestamp": "00:07:30",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "learned something new from this video. If so, please quickly like this video and if you haven't commented yet,  If you did, then do let me know by commenting if you have ever used this type of principle before and along with this, if you have not yet read the official discourses of Discourse Gyan",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=480s",
+			"start_seconds": 480,
+			"start_timestamp": "00:08:00",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	},
+	{
+		"page_content": "[Music]",
+		"metadata": {
+			"source": "https://www.youtube.com/watch?v=dZL5u8cA-UM&t=510s",
+			"start_seconds": 510,
+			"start_timestamp": "00:08:30",
+			"chunk_index": 0,
+			"num_unit_chunks": 1
+		},
+		"type": "Document"
+	}
+]

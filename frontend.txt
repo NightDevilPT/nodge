@@ -1,0 +1,421 @@
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\custom-node\index.tsx
+Contents:
+import { NodeProps } from "@xyflow/react";
+import React from "react";
+import { AppNodeData, NodeInputProps, NodeTypesEnum } from "../../interface";
+import { Card, CardContent } from "@/components/ui/card";
+import NodeHeader from "./node-header";
+import NodeInput from "./node-input";
+import { NodeIconColor } from "../node-registry";
+import NodeOutput from "./node-output";
+
+const NodeComponent = ({
+	id,
+	data,
+	selected,
+	dragHandle,
+	isConnectable,
+	zIndex,
+	positionAbsoluteX,
+	positionAbsoluteY,
+	targetPosition,
+	sourcePosition,
+	dragging,
+}: NodeProps) => {
+	console.log(
+		id,
+		isConnectable,
+		zIndex,
+		positionAbsoluteX,
+		positionAbsoluteY,
+		targetPosition,
+		sourcePosition,
+		dragging
+	);
+	const { type, inputs, output, icon: Icon, label } = data as AppNodeData;
+	return (
+		<Card className={`rounded-md ${selected && "ring-2 ring-primary/80"}`}>
+			<NodeHeader
+				icon={Icon}
+				label={label}
+				dragHandle={dragHandle}
+				iconColor={NodeIconColor[type as NodeTypesEnum]}
+				nodeId={id}
+			/>
+			<CardContent
+				className={`p-0 px-3 py-3 rounded-b-m bg-secondary dark:bg-card`}
+			>
+				{inputs?.map((items: NodeInputProps, index: number) => (
+					<NodeInput {...items} key={items.label + ":" + index} />
+				))}
+				{output && <NodeOutput {...output} />}
+			</CardContent>
+		</Card>
+	);
+};
+
+export default NodeComponent;
+
+--------------------------------------------------
+
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\custom-node\node-header.tsx
+Contents:
+import { CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import React from "react";
+import { MdDelete, MdDragIndicator } from "react-icons/md";
+import { IoIosCopy } from "react-icons/io";
+import { useReactFlow } from "@xyflow/react";
+
+interface NodeHeaderProps {
+	label: string;
+	icon: React.ElementType;
+	iconColor: string;
+	dragHandle: string | undefined;
+	nodeId:string;
+}
+
+const NodeHeader = ({
+	label,
+	icon: Icon,
+	dragHandle,
+	iconColor,
+	nodeId
+}: NodeHeaderProps) => {
+	const { getNodes, setNodes } = useReactFlow();
+
+    const handleDeleteNode = () => {
+        const updatedNodes = getNodes().filter((node) => node.id !== nodeId);
+        setNodes(updatedNodes);
+    };
+
+	return (
+		<CardHeader
+			className={`min-w-80 p-0 px-3 py-3 rounded-t-md border-accent border-b-2`}
+		>
+			<CardTitle
+				className={`min-w-80 flex justify-between items-center gap-3`}
+			>
+				<div
+					className={`w-auto h-auto flex justify-start items-center gap-2`}
+				>
+					<Icon className={`w-4 h-4 ${iconColor}`} />
+					<Label className={`text-sm`}>{label}</Label>
+				</div>
+				<div
+					className={`w-auto h-auto flex justify-between items-center gap-1`}
+				>
+					<button className={`w-5 h-5`}>
+						<IoIosCopy className={`w-4 h-4 text-green-400`} />
+					</button>
+					<button className={`w-5 h-5`} onClick={handleDeleteNode}>
+						<MdDelete className={`w-5 h-5 text-red-400`} />
+					</button>
+					<button
+						className={`w-5 h-5 cursor-grab drag-handle__custom`}
+					>
+						<MdDragIndicator
+							className={`w-5 h-5 text-card-foreground`}
+						/>
+					</button>
+				</div>
+			</CardTitle>
+		</CardHeader>
+	);
+};
+
+export default NodeHeader;
+
+--------------------------------------------------
+
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\custom-node\node-input.tsx
+Contents:
+import React from "react";
+import { InputTypesEnum, NodeInputProps } from "../../interface";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Handle, Position } from "@xyflow/react";
+
+const NodeInput = ({
+	label,
+	type,
+	value,
+	helperText,
+	required,
+}: NodeInputProps) => {
+	
+	if (type === InputTypesEnum.OUTPUT) {
+		return (
+			<div
+				className={`w-full h-auto grid grid-cols-1 gap-1 relative rounded-b-md`}
+			>
+				<Handle
+					type={"target"}
+					position={Position.Left}
+					className={`!w-3 !h-3 !rounded-full !bg-green-500 absolute !-left-3.5`}
+				/>
+				<Label className={`text-secondary-foreground pb-2`}>
+					Output
+				</Label>
+				<Label className={`text-secondary-foreground dark:bg-accent px-3 py-2 rounded-md bg-gray-200`}>
+					{value}
+				</Label>
+			</div>
+		);
+	}
+
+	return (
+		<div
+			className={`w-full h-auto grid grid-cols-1 gap-1 relative rounded-b-md`}
+		>
+			<Handle
+				type={"target"}
+				position={Position.Left}
+				className={`!w-3 !h-3 !rounded-full !bg-yellow-400 absolute !-left-3.5`}
+			/>
+			<Label htmlFor={label} className={`text-sm text-foreground`}>
+				{label} {required && <span className={`text-red-500`}>*</span>}
+			</Label>
+			<Input
+				type={type}
+				id={label}
+				placeholder={label}
+				className={`text-foreground bg-background`}
+			/>
+			{helperText && (
+				<Label className={`text-xs px-1 text-gray-500`}>
+					{helperText}
+				</Label>
+			)}
+		</div>
+	);
+};
+
+export default NodeInput;
+
+--------------------------------------------------
+
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\custom-node\node-output.tsx
+Contents:
+import React from "react";
+import { NodeOutputProps } from "../../interface";
+import { Label } from "@/components/ui/label";
+import { Handle, Position } from "@xyflow/react";
+
+const NodeOutput = ({
+	label,
+	value,
+}: NodeOutputProps) => {
+	console.log(value)
+	return (
+		<div className={`w-full h-auto grid grid-cols-1 gap-1 relative rounded-b-md mt-2`}>
+			<Handle type={"source"} position={Position.Right} className={`!w-3 !h-3 !rounded-full !bg-green-400 absolute !-right-3.5`} />
+			<Label htmlFor={label} className={`w-full text-right text-xs text-foreground`}>
+				{label}
+			</Label>
+		</div>
+	);
+};
+
+export default NodeOutput;
+
+--------------------------------------------------
+
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-registry.ts
+Contents:
+import { AppNode, NodeTypesEnum, SidebarButtonProps } from "../interface";
+import { ExtractTextFromElement } from "./node-types/extract-text-from-html";
+import { ExtractJsonFromElement } from "./node-types/extract-json-from-html";
+import { OutputNodeElement } from "./node-types/output-node";
+
+import { FaCode } from "react-icons/fa6";
+import { LuFileJson } from "react-icons/lu";
+import { MdOutlineInput, MdOutlineNumbers, MdOutlineOutput, MdOutlineTextFields } from "react-icons/md";
+import { TextNodeElement } from "./node-types/text-node";
+import { NumberNodeElement } from "./node-types/number-node";
+
+export const NodeRegistry = {
+	[NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT]: ExtractTextFromElement,
+	[NodeTypesEnum.EXTRACT_JSON_FROM_ELEMENT]: ExtractJsonFromElement,
+	[NodeTypesEnum.OUTPUT_ELEMENT]: OutputNodeElement,
+	[NodeTypesEnum.TEXT_ELEMENT]: TextNodeElement,
+	[NodeTypesEnum.NUMBER_ELEMENT]: NumberNodeElement
+};
+
+export const NodeIconColor = {
+	[NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT]: "text-orange-500",
+	[NodeTypesEnum.EXTRACT_JSON_FROM_ELEMENT]: "text-yellow-500",
+	[NodeTypesEnum.OUTPUT_ELEMENT]: "text-green-500",
+	[NodeTypesEnum.TEXT_ELEMENT]: "text-blue-500",
+	[NodeTypesEnum.NUMBER_ELEMENT]: "text-purple-500",
+};
+
+export const SidebarButtons: { [key: string]: SidebarButtonProps[] } = {
+	General: [
+		{
+			label: NodeTypesEnum.TEXT_ELEMENT,
+			icon: MdOutlineTextFields,
+			type: NodeTypesEnum.TEXT_ELEMENT,
+		},
+		{
+			label: NodeTypesEnum.OUTPUT_ELEMENT,
+			icon: MdOutlineOutput,
+			type: NodeTypesEnum.OUTPUT_ELEMENT,
+		},
+		{
+			label: NodeTypesEnum.NUMBER_ELEMENT,
+			icon: MdOutlineNumbers,
+			type: NodeTypesEnum.NUMBER_ELEMENT,
+		},
+	],
+	Extraction: [
+		{
+			label: NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT,
+			icon: FaCode,
+			type: NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT,
+		},
+		{
+			label: NodeTypesEnum.EXTRACT_JSON_FROM_ELEMENT,
+			icon: LuFileJson,
+			type: NodeTypesEnum.EXTRACT_JSON_FROM_ELEMENT,
+		},
+	],
+};
+
+export const CreateNode = (type: NodeTypesEnum): AppNode => {
+	return {
+		id: crypto.randomUUID(),
+		type: "FlowScrap",
+		dragHandle: ".drag-handle__custom",
+		position: { x: 0, y: 0 },
+		data: NodeRegistry[type],
+	};
+};
+
+--------------------------------------------------
+
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-types\extract-json-from-html.ts
+Contents:
+import { LuFileJson } from "react-icons/lu";
+import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
+
+export const ExtractJsonFromElement: AppNodeData = {
+	label: "Extract Json From Element",
+	type: NodeTypesEnum.EXTRACT_JSON_FROM_ELEMENT,
+	icon: LuFileJson,
+	inputs: [
+		{
+			label: "Enter Web Url",
+			required: true,
+			type: InputTypesEnum.STRING,
+			value: "",
+			helperText: "eg : http://www.google.com",
+		},
+	],
+	output: {
+		value: "",
+		label: "Extracted Text",
+	},
+};
+
+--------------------------------------------------
+
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-types\extract-text-from-html.ts
+Contents:
+import { FaCode } from "react-icons/fa6";
+import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
+
+export const ExtractTextFromElement: AppNodeData = {
+	label: "Extract Text From Element",
+	type: NodeTypesEnum.EXTRACT_TEXT_FROM_ELEMENT,
+	icon: FaCode,
+	inputs: [
+		{
+			label: "Enter Web Url",
+			required: true,
+			type: InputTypesEnum.STRING,
+			value: "",
+			helperText: "eg : http://www.google.com",
+		},
+	],
+	output: {
+		value: "",
+		label: "Extracted Text",
+	},
+};
+
+--------------------------------------------------
+
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-types\number-node.ts
+Contents:
+import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
+import { MdOutlineNumbers } from "react-icons/md";
+
+export const NumberNodeElement: AppNodeData = {
+	label: "Number Element",
+	type: NodeTypesEnum.NUMBER_ELEMENT,
+	icon: MdOutlineNumbers,
+	inputs: [
+		{
+			label: "Enter Number",
+			required: true,
+			type: InputTypesEnum.NUMBER,
+			value: 0, // Default value for number input
+		},
+	],
+	output: {
+		value: 0,
+		label: "Output",
+	},
+};
+
+--------------------------------------------------
+
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-types\output-node.ts
+Contents:
+import { LuFileJson } from "react-icons/lu";
+import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
+import { MdOutlineOutput } from "react-icons/md";
+
+export const OutputNodeElement: AppNodeData = {
+	label: "Output Element",
+	type: NodeTypesEnum.OUTPUT_ELEMENT,
+	icon: MdOutlineOutput,
+	inputs: [
+		{
+			label: "Enter Web Url",
+			required: true,
+			type: InputTypesEnum.OUTPUT,
+			value: "",
+			helperText: "eg : http://www.google.com",
+		},
+	]
+};
+
+--------------------------------------------------
+
+File Path: C:\Users\Pawan\Desktop\FullStackProject\nodge\src\components\reactflow\nodes\node-types\text-node.ts
+Contents:
+import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
+import { MdOutlineTextFields } from "react-icons/md";
+
+export const TextNodeElement: AppNodeData = {
+	label: "Text Element",
+	type: NodeTypesEnum.TEXT_ELEMENT,
+	icon: MdOutlineTextFields,
+	inputs: [
+		{
+			label: "Enter Text",
+			required: true,
+			type: InputTypesEnum.STRING,
+			value: "",
+		},
+	],
+	output: {
+		value: "",
+		label: "Output",
+	},
+};
+
+--------------------------------------------------
+
