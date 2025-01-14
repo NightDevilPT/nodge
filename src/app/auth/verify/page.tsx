@@ -5,14 +5,20 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import ApiService from "@/services/api.service";
 import { Button } from "@/components/ui/button";
 import NodgeLogo from "@/components/shared/logo";
+import { OTPFormData, otpSchema } from "../../../schema/otp";
 import { InputOTPWithSeparator } from "@/components/shared/out-input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { OTPFormData, otpSchema } from "../../../schema/otp";
 
 export default function OTPVerificationPage() {
+	const { toast } = useToast();
 	const router = useRouter();
+	const apiService = new ApiService("/user/verify");
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -34,29 +40,36 @@ export default function OTPVerificationPage() {
 	// Form submission
 	const onSubmit = async (data: OTPFormData) => {
 		setIsSubmitting(true);
-		setErrorMessage("");
-
 		try {
-			const response = await fetch("/api/verify-otp", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ otp: data.otp }),
+			// Call the ApiService create method to verify OTP
+			const response = await apiService.create<
+				{ message: string },
+				{ otp: string; email: string }
+			>({
+				otp: data.otp,
+				email: data.email,
 			});
 
-			if (!response.ok) {
-				const { message } = await response.json();
-				setErrorMessage(`Verification failed: ${message}`);
-				setIsSubmitting(false);
-				return;
-			}
+			// Show success toast
+			toast({
+				title: "Success",
+				description: response.message,
+				variant: "success",
+			});
 
-			alert("OTP Verified Successfully! Redirecting...");
-			router.push("/dashboard");
-		} catch (error) {
+			// Redirect to dashboard after successful verification
+			router.push("/");
+		} catch (error: any) {
+			// Handle error and show toast
 			console.error("Verification error:", error);
-			setErrorMessage("An unexpected error occurred. Please try again.");
+			toast({
+				title: "Verification Failed",
+				description:
+					error.message ||
+					"An unexpected error occurred. Please try again.",
+				variant: "destructive",
+			});
+		} finally {
 			setIsSubmitting(false);
 		}
 	};
@@ -80,6 +93,22 @@ export default function OTPVerificationPage() {
 						onSubmit={handleSubmit(onSubmit)}
 						className="space-y-6"
 					>
+						{/* Email Field */}
+						<div>
+							<Label htmlFor="email">Email</Label>
+							<Input
+								id="email"
+								type="email"
+								placeholder="Enter your email"
+								{...register("email")}
+								className="mt-1"
+							/>
+							{errors.email && (
+								<p className="text-red-600 text-sm mt-1">
+									{errors.email.message}
+								</p>
+							)}
+						</div>
 						<div className="grid grid-cols-1 gap-0 w-full place-content-center place-items-center">
 							<div className="mt-2 w-full flex justify-center items-center">
 								<InputOTPWithSeparator

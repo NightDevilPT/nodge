@@ -8,17 +8,19 @@ import NodgeDynamicLayout from "@/components/shared/dynamic-layout";
 
 const Layout = async ({ children }: { children: ReactNode }) => {
 	const cookieStore = await cookies();
-	const authToken = cookieStore.get("auth_token")?.value;
+	const accessToken = cookieStore.get("accessToken")?.value;
+	const refreshToken = cookieStore.get("refreshToken")?.value;
 
-	if (!authToken) {
+	if (!accessToken ) {
 		redirect("/auth/login");
 	}
 
-	const tokenValue = jwt.verify(authToken, config.jwtSecret as string) as {
-		id: string;
+	const tokenValue = jwt.verify(accessToken, config.jwtSecret as string) as {
+		userId: string;
 		username?: string;
 	};
-	if (!tokenValue?.id) {
+
+	if (!tokenValue?.userId) {
 		redirect("/auth/login");
 	}
 	return <NodgeDynamicLayout>{children}</NodgeDynamicLayout>;

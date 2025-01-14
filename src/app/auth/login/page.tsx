@@ -1,24 +1,26 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { commonStyle } from "@/lib/utils";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import ApiService from "@/services/api.service";
 import { Button } from "@/components/ui/button";
 import NodgeLogo from "@/components/shared/logo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoginFormData, loginSchema } from "../../../schema/login";
-import Link from "next/link";
-import { commonStyle } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// SignupForm Component
-export default function SignupForm() {
+export default function LoginForm() {
 	const router = useRouter();
+	const { toast } = useToast();
+	const apiService = new ApiService("/user/login");
 
-	// Initializing react-hook-form with Zod validation schema
 	const {
 		register,
 		handleSubmit,
@@ -27,28 +29,31 @@ export default function SignupForm() {
 		resolver: zodResolver(loginSchema),
 	});
 
-	// Form submission handler
 	const onSubmit = async (data: LoginFormData) => {
 		try {
-			const response = await fetch("/api/signup", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(data),
+			const response = await apiService.create<
+				{ status: number; message: string },
+				LoginFormData
+			>(data);
+
+			toast({
+				title: "Login Successful",
+				description: response.message,
+				variant: "success",
 			});
 
-			if (!response.ok) {
-				const { message } = await response.json();
-				alert(`Signup failed: ${message}`);
-				return;
-			}
+			router.push("/");
+		} catch (error: any) {
+			console.error("Login error:", error);
 
-			alert("Signup successful! Redirecting to login...");
-			router.push("/login");
-		} catch (error) {
-			console.error("Signup error:", error);
-			alert("An unexpected error occurred. Please try again.");
+			// Display error toast
+			toast({
+				title: "Login Failed",
+				description:
+					error.response?.data?.message ||
+					"An unexpected error occurred.",
+				variant: "destructive",
+			});
 		}
 	};
 
@@ -109,7 +114,7 @@ export default function SignupForm() {
 							disabled={isSubmitting}
 							className={`w-full mt-5 ${commonStyle.gradientBg}`}
 						>
-							{isSubmitting ? "Loging..." : "Login"}
+							{isSubmitting ? "Logging in..." : "Login"}
 						</Button>
 					</form>
 					<p

@@ -5,17 +5,22 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import NodgeLogo from "@/components/shared/logo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SignupFormData, signupSchema } from "../../../schema/signup";
 import Link from "next/link";
 import { commonStyle } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import ApiService from "@/services/api.service";
+import { Button } from "@/components/ui/button";
+import NodgeLogo from "@/components/shared/logo";
+import { CreateUserRequest, User } from "@/interface/user.interface";
+import { SignupFormData, signupSchema } from "../../../schema/signup";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function SignupForm() {
 	const router = useRouter();
+	const { toast } = useToast();
+	const apiService = new ApiService("/user/register");
 	const {
 		register,
 		handleSubmit,
@@ -26,25 +31,28 @@ export default function SignupForm() {
 
 	const onSubmit = async (data: SignupFormData) => {
 		try {
-			const response = await fetch("/api/signup", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(data),
+			const newUser: CreateUserRequest = {
+				email: data.email,
+				password: data.password,
+				provider: "CREDENTIAL",
+				username: data.username,
+			};
+			// Call the ApiService create method to register the user
+			const saveUser = await apiService.create<
+				{ message: string },
+				CreateUserRequest
+			>(newUser);
+			toast({
+				title: "Success",
+				description: saveUser.message,
+				variant: "success",
 			});
-
-			if (!response.ok) {
-				const { message } = await response.json();
-				alert(`Signup failed: ${message}`);
-				return;
-			}
-
-			alert("Signup successful! Redirecting to login...");
-			router.push("/login");
-		} catch (error) {
+			router.push("/auth/verify");
+		} catch (error: any) {
 			console.error("Signup error:", error);
-			alert("An unexpected error occurred. Please try again.");
+			alert(
+				error.response?.data?.message || "An unexpected error occurred."
+			);
 		}
 	};
 
@@ -56,7 +64,7 @@ export default function SignupForm() {
 						className={`w-full h-auto grid grid-cols-1 gap-2 place-content-center place-items-center`}
 					>
 						<NodgeLogo />
-						<h3>Create a new account</h3>
+						<h3>Create new account</h3>
 					</CardTitle>
 				</CardHeader>
 				<CardContent>

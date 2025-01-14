@@ -15,11 +15,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Find the user by email and otp
-    const user = await prisma.user.findFirst({
-      where: {
-        email: email,
-        otp: otp,
-      },
+    const user = await prisma.user.findUnique({
+      where:{
+        email,
+        otp:Number(otp)
+      }
     });
 
     if (!user) {
