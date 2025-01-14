@@ -5,16 +5,23 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import {
+	UpdatePasswordFormData,
+	updatePasswordSchema,
+} from "../../../schema/update-password";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import ApiService from "@/services/api.service";
 import { Button } from "@/components/ui/button";
 import NodgeLogo from "@/components/shared/logo";
 import { InputOTPWithSeparator } from "@/components/shared/out-input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UpdatePasswordFormData, updatePasswordSchema } from "../../../schema/update-password";
 
 export default function UpdatePasswordPage() {
 	const router = useRouter();
+	const { toast } = useToast();
+	const apiService = new ApiService("/user/update-password");
 
 	// Form hook
 	const {
@@ -34,21 +41,31 @@ export default function UpdatePasswordPage() {
 	// Form submission
 	const onSubmit = async (data: UpdatePasswordFormData) => {
 		try {
-			const response = await fetch("/api/update-password", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(data),
+			// API call to update password
+			await apiService.create<
+				{ message: string },
+				UpdatePasswordFormData
+			>(data);
+
+			toast({
+				title: "Success",
+				description:
+					"Password updated successfully! Redirecting to login...",
+				variant: "success",
 			});
 
-			if (!response.ok) throw new Error("Failed to update password.");
-
-			alert("Password updated successfully! Redirecting to login...");
+			// Redirect to login page after success
 			router.push("/auth/login");
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Update Password Error:", error);
-			alert("An error occurred. Please try again.");
+
+			toast({
+				title: "Error",
+				description:
+					error.response?.data?.message ||
+					"Failed to update password.",
+				variant: "destructive",
+			});
 		}
 	};
 
@@ -82,6 +99,23 @@ export default function UpdatePasswordPage() {
 							{errors.otp && (
 								<p className="text-red-600 text-sm mt-1">
 									{errors.otp.message}
+								</p>
+							)}
+						</div>
+
+						{/* Email Field */}
+						<div>
+							<Label htmlFor="email">Email</Label>
+							<Input
+								id="email"
+								type="email"
+								placeholder="Enter your email"
+								{...register("email")}
+								className="mt-1"
+							/>
+							{errors.email && (
+								<p className="text-red-600 text-sm mt-1">
+									{errors.email.message}
 								</p>
 							)}
 						</div>

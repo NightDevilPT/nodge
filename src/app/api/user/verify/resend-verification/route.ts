@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import prisma from "@/lib/prisma-client";
-import { emailProviderFactory } from "@/services/email-provider.service";
-import { getOtpEmailTemplate } from "@/templates/otp-mail.template";
 import { config } from "@/components/config";
 import { generateOtp } from "@/lib/generate-otp";
+import { getOtpEmailTemplate } from "@/templates/otp-mail.template";
+import { emailProviderFactory } from "@/services/email-provider.service";
 
 export async function POST(request: NextRequest) {
 	try {
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
 		if (user.isVerified) {
 			return NextResponse.json(
 				{ message: "Email is already verified." },
-				{ status: 400 }
+				{ status: 200 }
 			);
 		}
 

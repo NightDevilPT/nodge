@@ -8,15 +8,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import ApiService from "@/services/api.service";
 import { Button } from "@/components/ui/button";
 import NodgeLogo from "@/components/shared/logo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmailFormData, emailSchema } from "../../../schema/resend";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 
 export default function ForgetPasswordPage() {
 	const router = useRouter();
+	const { toast } = useToast();
 	const [step, setStep] = useState<"forget-password" | "resend-verification">(
 		"forget-password"
+	);
+
+	const apiServiceForgetPassword = new ApiService("/user/forget");
+	const apiServiceResendVerification = new ApiService(
+		"/user/verify/resend-verification"
 	);
 
 	// Form initialization
@@ -28,44 +37,66 @@ export default function ForgetPasswordPage() {
 		resolver: zodResolver(emailSchema),
 	});
 
-	// **Form submission handler for forget password**
+	// Form submission handler for forget password
 	const handleForgetPasswordSubmit = async (data: EmailFormData) => {
 		try {
-			const response = await fetch("/api/forget-password", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(data),
+			const response = await apiServiceForgetPassword.create<
+				{ message: string, status:number },
+				EmailFormData
+			>(data);
+
+			toast({
+				title: "Success",
+				description: "Password reset link sent to your email.",
+				variant: "success",
 			});
-
-			if (!response.ok) throw new Error("Failed to send reset link.");
-
-			alert("Password reset link sent to your email.");
-		} catch (error) {
+			router.push("/auth/update-password");
+		} catch (error: any) {
 			console.error("Forget Password Error:", error);
-			alert("An error occurred. Please try again later.");
+			toast({
+				title: "Error",
+				description:
+					error.response?.data?.message ||
+					"Failed to send reset link.",
+				variant: "destructive",
+			});
 		}
 	};
 
-	// **Form submission handler for resend verification**
+	// Form submission handler for resend verification
 	const handleResendVerificationSubmit = async (data: EmailFormData) => {
 		try {
-			const response = await fetch("/api/resend-verification", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(data),
+			const response = await apiServiceResendVerification.create<
+				{ message: string },
+				EmailFormData
+			>(data);
+
+			if(response.message==="Email is already verified."){
+				toast({
+					title: "Warning",
+					description: response.message,
+					variant: "warning",
+				});
+				router.push("/auth/login");
+				return
+			}
+
+
+			toast({
+				title: "Success",
+				description: "Verification email resent successfully.",
+				variant: "success",
 			});
-
-			if (!response.ok)
-				throw new Error("Failed to resend verification email.");
-
-			alert("Verification email resent successfully.");
-		} catch (error) {
+			router.push("/auth/verify");
+		} catch (error: any) {
 			console.error("Resend Verification Error:", error);
-			alert("An error occurred. Please try again later.");
+			toast({
+				title: "Error",
+				description:
+					error.response?.data?.message ||
+					"Failed to resend verification email.",
+				variant: "destructive",
+			});
 		}
 	};
 

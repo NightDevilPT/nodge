@@ -7,6 +7,7 @@ export const updatePasswordSchema = z
 			.string()
 			.length(6, "OTP must be exactly 6 digits")
 			.regex(/^\d+$/, "OTP must contain only numbers"),
+		email: z.string().email("Please enter a valid email address."),
 		newPassword: z
 			.string()
 			.min(8, "Password must be at least 8 characters long"),

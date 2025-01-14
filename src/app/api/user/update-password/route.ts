@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma-client";
 import bcrypt from "bcryptjs";
+import prisma from "@/lib/prisma-client";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
 	try {
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 		const user = await prisma.user.findFirst({
 			where: {
 				email,
-				otp,
+				otp: Number(otp),
 			},
 		});
 
