@@ -1,38 +1,35 @@
 import axiosInstance from "@/lib/api-instance";
 
-class ApiService<T> {
+class ApiService {
 	constructor(private endpoint: string) {}
 
 	// === GET ALL ===
-	async getAll(): Promise<T[]> {
-		const response = await axiosInstance.get<T[]>(this.endpoint);
-		return response.data;
+	async getAll<T>(): Promise<T[]> {
+		const response = await axiosInstance.get(this.endpoint);
+		return response.data as T[];
 	}
 
 	// === GET BY ID ===
-	async getById(id: string): Promise<T> {
-		const response = await axiosInstance.get<T>(`${this.endpoint}/${id}`);
-		return response.data;
+	async getById<T>(id: string): Promise<T> {
+		const response = await axiosInstance.get(this.endpoint + `/${id}`);
+		return response.data as T;
 	}
 
 	// === POST (CREATE) ===
-	async create(data: Partial<T>): Promise<T> {
-		const response = await axiosInstance.post<T>(this.endpoint, data);
-		return response.data;
+	async create<T, R>(data: R): Promise<T> {
+		const response = await axiosInstance.post(this.endpoint, data);
+		return response.data as T;
 	}
 
 	// === PUT (UPDATE) ===
-	async update(id: string, data: Partial<T>): Promise<T> {
-		const response = await axiosInstance.put<T>(
-			`${this.endpoint}/${id}`,
-			data
-		);
-		return response.data;
+	async update<T, R>(id: string, data: R): Promise<T> {
+		const response = await axiosInstance.put(this.endpoint + `/${id}`, data);
+		return response.data as T;
 	}
 
 	// === DELETE ===
 	async delete(id: string): Promise<void> {
-		await axiosInstance.delete(`${this.endpoint}/${id}`);
+		await axiosInstance.delete(this.endpoint + `/${id}`);
 	}
 }
 
