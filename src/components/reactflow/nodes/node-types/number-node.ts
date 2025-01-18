@@ -4,14 +4,18 @@ import { MdOutlineNumbers, MdDelete } from "react-icons/md";
 import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
 
 export const NUMBER_NODE: AppNodeData = {
-	type: NodeTypesEnum.TEXT_NODE,
+	type: NodeTypesEnum.NUMBER_NODE,
 	header: {
 		label: "Number Node",
-		isCopy: true,
-		isDelete: true,
+		copy: {
+			isCopy: true,
+			copyIcon: IoIosCopy,
+		},
+		dlt: {
+			isDelete: true,
+			deleteIcon: MdDelete,
+		},
 		iconColor: "text-green-500",
-		copyIcon: IoIosCopy,
-		deleteIcon: MdDelete,
 		icon: MdOutlineNumbers,
 	},
 	execution: function () {
@@ -25,6 +29,7 @@ export const NUMBER_NODE: AppNodeData = {
 			required: true,
 			value: 0,
 			inputType: InputTypesEnum.NUMBER,
+			isSource:true
 		},
 	],
 };

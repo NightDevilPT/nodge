@@ -11,18 +11,18 @@ const Layout = async ({ children }: { children: ReactNode }) => {
 	const accessToken = cookieStore.get("accessToken")?.value;
 	const refreshToken = cookieStore.get("refreshToken")?.value;
 
-	if (!accessToken ) {
-		redirect("/auth/login");
-	}
+	// if (!accessToken ) {
+	// 	redirect("/auth/login");
+	// }
 
-	const tokenValue = jwt.verify(accessToken, config.jwtSecret as string) as {
-		userId: string;
-		username?: string;
-	};
+	// const tokenValue = jwt.verify(accessToken, config.jwtSecret as string) as {
+	// 	userId: string;
+	// 	username?: string;
+	// };
 
-	if (!tokenValue?.userId) {
-		redirect("/auth/login");
-	}
+	// if (!tokenValue?.userId) {
+	// 	redirect("/auth/login");
+	// }
 	return <NodgeDynamicLayout>{children}</NodgeDynamicLayout>;
 };
 

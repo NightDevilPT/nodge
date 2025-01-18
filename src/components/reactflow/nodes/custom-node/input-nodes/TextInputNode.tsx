@@ -14,7 +14,16 @@ const TextInputNode = ({
 	input: NodeInputProps;
 	nodeId: string;
 }) => {
-	const { label, helperText, required, value, onChange, id } = input;
+	const {
+		label,
+		helperText,
+		required,
+		value,
+		onChange,
+		id,
+		isSource,
+		isTarget,
+	} = input;
 	const { getNode, updateNode } = useReactFlow();
 
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,14 +40,26 @@ const TextInputNode = ({
 	return (
 		<>
 			<div className={`w-full grid grid-cols-1 gap-1 relative`}>
-				<Handle
-					type="target"
-					id={id}
-					position={Position.Left}
-					className={cn(
-						`!w-3 !h-3 absolute !-left-3.5 !bg-yellow-500`
-					)}
-				/>
+				{isTarget && (
+					<Handle
+						type="target"
+						id={`${id}-handle`}
+						position={Position.Left}
+						className={cn(
+							`!w-3 !h-3 absolute !-left-3.5 !bg-blue-500`
+						)}
+					/>
+				)}
+				{isSource && (
+					<Handle
+						type="source"
+						id={`${id}-source`}
+						position={Position.Right}
+						className={cn(
+							`!w-3 !h-3 absolute !-right-3.5 !bg-yellow-500`
+						)}
+					/>
+				)}
 				<Label className={`text-sm`}>
 					{label}{" "}
 					{required && <span className={`text-red-500`}>*</span>}

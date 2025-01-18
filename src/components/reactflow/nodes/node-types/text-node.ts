@@ -7,11 +7,15 @@ export const TEXT_NODE: AppNodeData = {
 	type: NodeTypesEnum.TEXT_NODE,
 	header: {
 		label: "Text",
-		isCopy: true,
-		isDelete: true,
+		copy: {
+			isCopy: true,
+			copyIcon: IoIosCopy,
+		},
+		dlt: {
+			isDelete: true,
+			deleteIcon: MdDelete,
+		},
 		iconColor: "text-blue-500",
-		copyIcon: IoIosCopy,
-		deleteIcon: MdDelete,
 		icon: MdOutlineTextFields,
 	},
 	execution: function () {
@@ -25,6 +29,7 @@ export const TEXT_NODE: AppNodeData = {
 			required: true,
 			value: "text",
 			inputType: InputTypesEnum.TEXT,
+			isSource: true,
 		},
 	],
 };

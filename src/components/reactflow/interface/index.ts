@@ -20,12 +20,16 @@ type ValueTypes =
 export interface NodeHeaderProps {
 	nodeId?: string;
 	label: string;
-	isCopy: boolean;
+	copy: {
+		isCopy: boolean;
+		copyIcon?: React.ElementType;
+	};
+	dlt: {
+		isDelete: boolean;
+		deleteIcon?: React.ElementType;
+	};
 	iconColor: string;
-	isDelete: boolean;
 	icon: React.ElementType;
-	copyIcon?: React.ElementType;
-	deleteIcon?: React.ElementType;
 }
 
 export interface AppNodeData {
@@ -43,13 +47,15 @@ export enum InputTypesEnum {
 	FILE = "file",
 	TEXTAREA = "textarea",
 	PASSWORD = "password",
-	URL = "url"
+	URL = "url",
 }
 
 export interface NodeOutputProps {
 	id?: string;
 	label: string;
 	value: ValueTypes;
+	isTarget?:boolean;
+	isSource?:boolean;
 }
 
 export interface NodeInputProps {
@@ -60,6 +66,8 @@ export interface NodeInputProps {
 	helperText?: string;
 	value: ValueTypes;
 	inputType: InputTypesEnum;
+	isTarget?:boolean;
+	isSource?:boolean;
 	onChange?: (value: ValueTypes) => void;
 }
 

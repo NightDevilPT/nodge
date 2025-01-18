@@ -7,11 +7,15 @@ export const FILE_INPUT_NODE: AppNodeData = {
 	type: NodeTypesEnum.FILE_NODE, // Define as an input node
 	header: {
 		label: "File Input Node", // Node title
-		isCopy: true, // Enables copy functionality
-		isDelete: true, // Enables delete functionality
+		copy: {
+			isCopy: true,
+			copyIcon: IoIosCopy,
+		},
+		dlt: {
+			isDelete: true,
+			deleteIcon: MdDelete,
+		},
 		iconColor: "text-purple-500", // Icon styling
-		copyIcon: IoIosCopy, // Copy icon
-		deleteIcon: MdDelete, // Delete icon
 		icon: MdOutlineFilePresent, // Icon for file input
 	},
 	execution: function () {
@@ -25,6 +29,7 @@ export const FILE_INPUT_NODE: AppNodeData = {
 			required: true, // Specifies that this input is required
 			value: null, // Default value (null for file)
 			inputType: InputTypesEnum.FILE, // Specifies the input type as a file
+			isSource:true
 		},
 	],
 };

@@ -22,7 +22,8 @@ const FileInputNode = ({
 	input: NodeInputProps;
 	nodeId: string;
 }) => {
-	const { label, helperText, required, value, id } = input;
+	const { label, helperText, required, value, id, isTarget, isSource } =
+		input;
 	const { getNode, updateNode } = useReactFlow(); // Functions to interact with ReactFlow
 	const [fileType, setFileType] = useState<string>("image"); // State for the selected file type
 	const [fileContent, setFileContent] = useState<string | ArrayBuffer | null>(
@@ -83,14 +84,26 @@ const FileInputNode = ({
 		<>
 			<div className={`w-full grid grid-cols-1 gap-1 relative`}>
 				{/* Node connection handle */}
-				<Handle
-					type="target"
-					id={id}
-					position={Position.Left}
-					className={cn(
-						`!w-3 !h-3 absolute !-left-3.5 !bg-yellow-500`
-					)}
-				/>
+				{isTarget && (
+					<Handle
+						type="target"
+						id={`${id}-handle`}
+						position={Position.Left}
+						className={cn(
+							`!w-3 !h-3 absolute !-left-3.5 !bg-yellow-500`
+						)}
+					/>
+				)}
+				{isSource && (
+					<Handle
+						type="source"
+						id={`${id}-source`}
+						position={Position.Right}
+						className={cn(
+							`!w-3 !h-3 absolute !-right-3.5 !bg-yellow-500`
+						)}
+					/>
+				)}
 				{/* Label for the input */}
 				<Label className={`text-sm`}>
 					{label}{" "}

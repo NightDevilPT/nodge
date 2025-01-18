@@ -1,25 +1,36 @@
 import React from "react";
 import { useReactFlow } from "@xyflow/react";
-import { NodeHeaderProps } from "../../interface";
+import { NodeHeaderProps, NodeTypesEnum } from "../../interface";
 import { MdOutlineDragIndicator } from "react-icons/md";
 
 import { CardHeader, CardTitle } from "@/components/ui/card";
+import { CreateNode } from "../node-registry";
 
 const NodeHeader = ({
 	nodeId,
 	label,
-	isCopy,
 	iconColor,
-	isDelete,
 	icon: Icon,
-	copyIcon: CopyIcon,
-	deleteIcon: DeleteIcon,
+	copy,
+	dlt,
 }: NodeHeaderProps) => {
-	const { getNodes, setNodes } = useReactFlow();
+	const { isCopy, copyIcon: CopyIcon } = copy;
+	const { isDelete, deleteIcon: DeleteIcon } = dlt;
+	const { getNodes, setNodes, getNode } = useReactFlow();
 
 	const handleDeleteNode = () => {
 		const updatedNodes = getNodes().filter((node) => node.id !== nodeId);
 		setNodes(updatedNodes);
+	};
+
+	const handleCopyNode = (event: React.MouseEvent<HTMLButtonElement>) => {
+		const currentNodeType = getNode(nodeId as string)?.data.type;
+		const newNode = CreateNode(currentNodeType as NodeTypesEnum);
+		newNode.position = {
+			x: 20,
+			y: 20,
+		};
+		setNodes((nds) => nds.concat(newNode));
 	};
 
 	return (
@@ -36,7 +47,7 @@ const NodeHeader = ({
 					className={`w-auto flex justify-center items-center gap-2`}
 				>
 					{isCopy && CopyIcon && (
-						<button className={`w-4 h-4 `}>
+						<button className={`w-4 h-4 `} onClick={handleCopyNode}>
 							<CopyIcon
 								className={`text-green-500 w-full h-full`}
 							/>

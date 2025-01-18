@@ -8,11 +8,15 @@ export const URL_NODE: AppNodeData = {
 	type: NodeTypesEnum.URL_NODE,
 	header: {
 		label: "URL Node",
-		isCopy: true,
-		isDelete: true,
+		copy: {
+			isCopy: true,
+			copyIcon: IoIosCopy,
+		},
+		dlt: {
+			isDelete: true,
+			deleteIcon: MdDelete,
+		},
 		iconColor: "text-blue-500",
-		copyIcon: IoIosCopy,
-		deleteIcon: MdDelete,
 		icon: PiLinkBold,
 	},
 	execution: function () {
@@ -26,6 +30,7 @@ export const URL_NODE: AppNodeData = {
 			required: true,
 			value: "",
 			inputType: InputTypesEnum.URL,
+			isSource: true,
 		},
 	],
 };
