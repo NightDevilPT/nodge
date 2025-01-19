@@ -69,6 +69,7 @@ export interface NodeInputProps {
 	isTarget?:boolean;
 	isSource?:boolean;
 	onChange?: (value: ValueTypes) => void;
+	renderNode?: React.ComponentType<{ nodeId: string; input: NodeInputProps }>;
 }
 
 export interface AppNode extends Node {

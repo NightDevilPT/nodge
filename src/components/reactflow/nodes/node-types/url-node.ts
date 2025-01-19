@@ -3,6 +3,7 @@ import { IoIosCopy } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 
 import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
+import UrlInput from "../custom-node/general-nodes/url-input";
 
 export const URL_NODE: AppNodeData = {
 	type: NodeTypesEnum.URL_NODE,
@@ -31,6 +32,7 @@ export const URL_NODE: AppNodeData = {
 			value: "",
 			inputType: InputTypesEnum.URL,
 			isSource: true,
+			renderNode:UrlInput
 		},
 	],
 };

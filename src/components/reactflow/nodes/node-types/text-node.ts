@@ -1,7 +1,8 @@
 import { IoIosCopy } from "react-icons/io";
 import { MdOutlineTextFields, MdDelete } from "react-icons/md";
 
-import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
+import TextInput from "../custom-node/general-nodes/text-input";
+import { AppNodeData, InputTypesEnum, NodeInputProps, NodeTypesEnum } from "../../interface";
 
 export const TEXT_NODE: AppNodeData = {
 	type: NodeTypesEnum.TEXT_NODE,
@@ -30,6 +31,7 @@ export const TEXT_NODE: AppNodeData = {
 			value: "text",
 			inputType: InputTypesEnum.TEXT,
 			isSource: true,
+			renderNode: TextInput,
 		},
 	],
 };

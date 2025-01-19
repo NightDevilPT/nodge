@@ -60,13 +60,15 @@ const FlowEditor = () => {
 		[screenToFlowPosition]
 	);
 
-	const onConnect = useCallback(
-		(params: Connection) => {
-			console.log(params,'CONNECTION PARAMS')
-			setEdges((eds) => addEdge(params, eds))
-		},
-		[]
-	);
+	const onConnect = useCallback((params: Connection) => {
+		const { target, source } = params;
+		// Prevent connection if source and target are the same
+		if (source === target) {
+			console.warn("Cannot connect a node to itself!");
+			return;
+		}
+		setEdges((eds) => addEdge(params, eds));
+	}, []);
 
 	return (
 		<React.Fragment>

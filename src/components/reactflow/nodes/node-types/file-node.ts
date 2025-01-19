@@ -2,6 +2,7 @@ import { IoIosCopy } from "react-icons/io";
 import { MdDelete, MdOutlineFilePresent } from "react-icons/md";
 
 import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
+import FileInput from "../custom-node/general-nodes/file-input";
 
 export const FILE_INPUT_NODE: AppNodeData = {
 	type: NodeTypesEnum.FILE_NODE, // Define as an input node
@@ -29,7 +30,8 @@ export const FILE_INPUT_NODE: AppNodeData = {
 			required: true, // Specifies that this input is required
 			value: null, // Default value (null for file)
 			inputType: InputTypesEnum.FILE, // Specifies the input type as a file
-			isSource:true
+			isSource:true,
+			renderNode:FileInput
 		},
 	],
 };

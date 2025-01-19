@@ -2,6 +2,7 @@ import { IoIosCopy } from "react-icons/io";
 import { MdOutlineNumbers, MdDelete } from "react-icons/md";
 
 import { AppNodeData, InputTypesEnum, NodeTypesEnum } from "../../interface";
+import NumberInput from "../custom-node/general-nodes/number-input";
 
 export const NUMBER_NODE: AppNodeData = {
 	type: NodeTypesEnum.NUMBER_NODE,
@@ -29,7 +30,8 @@ export const NUMBER_NODE: AppNodeData = {
 			required: true,
 			value: 0,
 			inputType: InputTypesEnum.NUMBER,
-			isSource:true
+			isSource:true,
+			renderNode:NumberInput
 		},
 	],
 };
