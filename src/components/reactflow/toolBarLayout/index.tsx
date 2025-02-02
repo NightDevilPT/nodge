@@ -1,16 +1,17 @@
 "use client";
 
 import React from "react";
-import { SidebarButtons } from "../nodes/node-registry";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import { SidebarButtonProps } from "../interface";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+
+import { NodeTypeColors, SidebarButtonProps } from "../interface";
+import { SidebarButtons } from "../nodes/custom-nodes/node-registry";
 
 const ToolBarLayout = () => {
 	const allItems = Object.keys(SidebarButtons);
@@ -34,7 +35,6 @@ const ToolBarLayout = () => {
 											label,
 											icon,
 											type,
-											iconColor
 										}: SidebarButtonProps,
 										sideBarIndex: number
 									) => {
@@ -43,7 +43,6 @@ const ToolBarLayout = () => {
 												label={label}
 												icon={icon}
 												type={type}
-												iconColor={iconColor}
 												key={label + ":" + sideBarIndex}
 											/>
 										);
@@ -64,7 +63,6 @@ export const ToolBarButton = ({
 	label,
 	icon: Icon,
 	type,
-	iconColor
 }: SidebarButtonProps) => {
 	const formatLabel = () => {
 		return label.replace(/-/g, " ").trim();
@@ -82,7 +80,7 @@ export const ToolBarButton = ({
 			className={`w-full p-0 px-3 cursor-pointer mb-3`}
 		>
 			<Button className={`flex w-full justify-start items-center gap-2`} variant={"outline"}>
-				<Icon className={`w-4 h-4 ${iconColor}`} />
+				<Icon className={`w-4 h-4`} />
 				<Label className={`capitalize cursor-pointer`}>{formatLabel()}</Label>
 			</Button>
 		</AccordionContent>

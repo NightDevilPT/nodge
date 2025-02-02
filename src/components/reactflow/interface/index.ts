@@ -3,9 +3,17 @@ import { Node } from "@xyflow/react";
 
 export enum NodeTypesEnum {
 	TEXT_NODE = "TEXT_NODE",
-	NUMBER_NODE = "NUMBER_NODE",
-	FILE_NODE = "FILE_NODE",
-	URL_NODE = "URL_NODE",
+}
+
+export const NodeTypeColors = {
+	[NodeTypesEnum.TEXT_NODE]: "text-blue-500",
+};
+
+export interface NodeRegistryType {
+	[key: string]: {
+		component: React.ElementType;
+		config: any;
+	};
 }
 
 type ValueTypes =
@@ -14,62 +22,30 @@ type ValueTypes =
 	| object
 	| string[]
 	| number[]
-	| object[]
+	| { key: string; value: string }[] // For headers or query parameters
 	| null;
 
 export interface NodeHeaderProps {
-	nodeId?: string;
-	label: string;
+	nodeId?: string; // ID of the node (useful for copying or deleting the node)
+	label: string; // Title of the node
 	copy: {
-		isCopy: boolean;
-		copyIcon?: React.ElementType;
+		isCopy: boolean; // Whether the node can be copied
+		copyIcon?: React.ElementType; // Icon for the copy action
 	};
 	dlt: {
-		isDelete: boolean;
-		deleteIcon?: React.ElementType;
+		isDelete: boolean; // Whether the node can be deleted
+		deleteIcon?: React.ElementType; // Icon for the delete action
 	};
-	iconColor: string;
-	icon: React.ElementType;
+	icon: React.ElementType; // Node icon
+	info?: React.ElementType;
 }
 
 export interface AppNodeData {
 	type: NodeTypesEnum;
 	header: NodeHeaderProps;
-	inputs?: NodeInputProps[];
-	output?: NodeOutputProps;
+	outputValue: ValueTypes;
 	execution?: () => void;
 	[key: string]: any;
-}
-
-export enum InputTypesEnum {
-	TEXT = "text",
-	NUMBER = "number",
-	FILE = "file",
-	TEXTAREA = "textarea",
-	PASSWORD = "password",
-	URL = "url",
-}
-
-export interface NodeOutputProps {
-	id?: string;
-	label: string;
-	value: ValueTypes;
-	isTarget?:boolean;
-	isSource?:boolean;
-}
-
-export interface NodeInputProps {
-	id?: string;
-	name: string;
-	label: string;
-	required: boolean;
-	helperText?: string;
-	value: ValueTypes;
-	inputType: InputTypesEnum;
-	isTarget?:boolean;
-	isSource?:boolean;
-	onChange?: (value: ValueTypes) => void;
-	renderNode?: React.ComponentType<{ nodeId: string; input: NodeInputProps }>;
 }
 
 export interface AppNode extends Node {
@@ -79,6 +55,5 @@ export interface AppNode extends Node {
 export interface SidebarButtonProps {
 	label: string;
 	icon: React.ElementType;
-	iconColor: string;
 	type: NodeTypesEnum;
 }

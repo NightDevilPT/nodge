@@ -1,7 +1,6 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import React, { useCallback, useRef } from "react";
 import {
 	addEdge,
 	Background,
@@ -14,16 +13,15 @@ import {
 	useNodesState,
 	useReactFlow,
 } from "@xyflow/react";
+import React, { useCallback, useRef } from "react";
+import {
+	NodeRegistry,
+	NodeTypeDefination,
+} from "../nodes/custom-nodes/node-registry";
 import DeletableEdge from "../edge/custom-edge";
-import NodeComponent from "../nodes/custom-node";
-import { CreateNode } from "../nodes/node-registry";
 import { AppNode, NodeTypesEnum } from "../interface";
 
 const snapGrid: [number, number] = [20, 20];
-
-const nodeTypes = {
-	FlowScrap: NodeComponent,
-};
 
 const edgeTypes = {
 	default: DeletableEdge,
@@ -32,9 +30,9 @@ const edgeTypes = {
 const FlowEditor = () => {
 	const { theme } = useTheme();
 	const reactFlowWrapper = useRef(null);
-	const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
-	const [edges, setEdges, onEdgesChange] = useNodesState([]);
 	const { screenToFlowPosition } = useReactFlow();
+	const [edges, setEdges, onEdgesChange] = useNodesState([]);
+	const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
 
 	const onDragOver = useCallback((event: React.DragEvent) => {
 		event.preventDefault();
@@ -46,18 +44,31 @@ const FlowEditor = () => {
 			event.preventDefault();
 			const taskType = event.dataTransfer.getData(
 				"application/reactflow"
-			);
+			) as NodeTypesEnum;
+
+			// Validate node type
+			if (!NodeRegistry[taskType]) {
+				console.error(`Unknown node type: ${taskType}`);
+				return;
+			}
 
 			const position = screenToFlowPosition({
 				x: event.clientX,
 				y: event.clientY,
 			});
-			const newNode: AppNode = CreateNode(taskType as NodeTypesEnum);
-			newNode.position = position;
 
-			setNodes((nds) => nds.concat(newNode));
+			// Get default node data from NodeRegistry
+			const nodeConfig = NodeRegistry[taskType];
+			const nodeId = crypto.randomUUID();
+			const newNode: AppNode = {
+				id: `${taskType}:${nodeId}`,
+				type: taskType,
+				position,
+				data: nodeConfig.data,
+			};
+			setNodes((nds) => [...nds, newNode]);
 		},
-		[screenToFlowPosition]
+		[screenToFlowPosition, setNodes]
 	);
 
 	const onConnect = useCallback((params: Connection) => {
@@ -83,7 +94,7 @@ const FlowEditor = () => {
 				onDrop={onDrop}
 				onDragOver={onDragOver}
 				onConnect={onConnect}
-				nodeTypes={nodeTypes}
+				nodeTypes={NodeTypeDefination}
 				edgeTypes={edgeTypes}
 				colorMode={theme as ColorMode}
 			>
