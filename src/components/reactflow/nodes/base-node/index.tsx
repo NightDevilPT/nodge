@@ -3,7 +3,11 @@ import { useReactFlow } from "@xyflow/react";
 
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
-import { NodeRegistry } from "../custom-nodes/node-registry";
+import {
+	NodeHeaderIcons,
+	NodeRegistry,
+	NodeTypeColors,
+} from "../custom-nodes/node-registry";
 import { AppNode, NodeHeaderProps, NodeTypesEnum } from "../../interface";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -19,8 +23,10 @@ const BaseNode = ({ header, children, nodeId }: BaseNodeProps) => {
 		copy: { isCopy, copyIcon: CopyIcon },
 		dlt: { isDelete, deleteIcon: DeleteIcon },
 		info: InfoComponent,
+		type,
 	} = header;
 	const { getNodes, setNodes, getNode } = useReactFlow();
+	const NodeIcon = NodeHeaderIcons[type as NodeTypesEnum];
 
 	const handleDeleteNode = () => {
 		const updatedNodes = getNodes().filter((node) => node.id !== nodeId);
@@ -54,19 +60,32 @@ const BaseNode = ({ header, children, nodeId }: BaseNodeProps) => {
 					className={cn(` flex justify-between items-center gap-2`)}
 				>
 					<div className={`flex justify-center items-center gap-2`}>
+						<NodeIcon
+							className={`w-4 h-4 ${
+								NodeTypeColors[type as NodeTypesEnum]
+							}`}
+						/>
 						<h3>{label}</h3>
-						{InfoComponent && <InfoComponent className="text-red-500" />}
+						{InfoComponent && (
+							<InfoComponent className="text-red-500" />
+						)}
 					</div>
 					<div className={`flex justify-center items-center gap-2`}>
 						{isCopy && CopyIcon && (
-							<div onClick={handleCopyNode}>
+							<div
+								onClick={handleCopyNode}
+								className="cursor-pointer"
+							>
 								<CopyIcon
 									className={`w-4 h-4 text-green-400`}
 								/>
 							</div>
 						)}
 						{isDelete && DeleteIcon && (
-							<div onClick={handleDeleteNode}>
+							<div
+								onClick={handleDeleteNode}
+								className="cursor-pointer"
+							>
 								<DeleteIcon
 									className={`w-4 h-4 text-red-400`}
 								/>

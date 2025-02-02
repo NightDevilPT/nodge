@@ -1,5 +1,4 @@
 import { TbCopy, TbTextCaption, TbTrash } from "react-icons/tb";
-
 import TextNodeInfo from "./text-node-info";
 import { AppNodeData, NodeTypesEnum } from "@/components/reactflow/interface";
 
@@ -15,8 +14,8 @@ export const TextNodeJson: AppNodeData = {
 			deleteIcon: TbTrash,
 		},
 		icon: TbTextCaption,
-		label: "Text Node",
 		info: TextNodeInfo,
+		label: "Text Node",
 	},
 	outputValue: "",
 };

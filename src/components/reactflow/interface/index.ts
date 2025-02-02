@@ -5,10 +5,6 @@ export enum NodeTypesEnum {
 	TEXT_NODE = "TEXT_NODE",
 }
 
-export const NodeTypeColors = {
-	[NodeTypesEnum.TEXT_NODE]: "text-blue-500",
-};
-
 export interface NodeRegistryType {
 	[key: string]: {
 		component: React.ElementType;
@@ -38,6 +34,7 @@ export interface NodeHeaderProps {
 	};
 	icon: React.ElementType; // Node icon
 	info?: React.ElementType;
+	type?:NodeTypesEnum;
 }
 
 export interface AppNodeData {
@@ -54,6 +51,5 @@ export interface AppNode extends Node {
 
 export interface SidebarButtonProps {
 	label: string;
-	icon: React.ElementType;
 	type: NodeTypesEnum;
 }
