@@ -16,6 +16,7 @@ export const TextNodeJson: AppNodeData = {
 		icon: TbTextCaption,
 		info: TextNodeInfo,
 		label: "Text Node",
+		type: NodeTypesEnum.TEXT_NODE,
 	},
 	outputValue: "",
 };
