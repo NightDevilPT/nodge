@@ -13,7 +13,7 @@ import {
 	useNodesState,
 	useReactFlow,
 } from "@xyflow/react";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
 	NodeRegistry,
 	NodeTypeDefination,
@@ -28,10 +28,11 @@ const edgeTypes = {
 };
 
 const FlowEditor = () => {
-	const { theme } = useTheme();
+	const { resolvedTheme } = useTheme();
 	const reactFlowWrapper = useRef(null);
 	const { screenToFlowPosition } = useReactFlow();
 	const [edges, setEdges, onEdgesChange] = useNodesState([]);
+	const [colorMode, setColorMode] = useState<ColorMode>("light");
 	const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
 
 	const onDragOver = useCallback((event: React.DragEvent) => {
@@ -81,6 +82,13 @@ const FlowEditor = () => {
 		setEdges((eds) => addEdge(params, eds));
 	}, []);
 
+	// Ensure theme is applied after hydration
+	useEffect(() => {
+		if (resolvedTheme) {
+			setColorMode(resolvedTheme === "dark" ? "dark" : "light");
+		}
+	}, [resolvedTheme]);
+
 	return (
 		<React.Fragment>
 			<ReactFlow
@@ -96,7 +104,7 @@ const FlowEditor = () => {
 				onConnect={onConnect}
 				nodeTypes={NodeTypeDefination}
 				edgeTypes={edgeTypes}
-				colorMode={theme as ColorMode}
+				colorMode={colorMode}
 			>
 				<Controls />
 				<MiniMap />

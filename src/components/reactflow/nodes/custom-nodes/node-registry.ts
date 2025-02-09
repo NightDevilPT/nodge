@@ -1,15 +1,15 @@
-import { TextIcon } from "lucide-react";
-
 import {
 	AppNode,
 	AppNodeData,
-	NodeHeaderProps,
 	NodeTypesEnum,
 	SidebarButtonProps,
 } from "../../interface";
-import { TextNode } from "./text-node";
-import { TextNodeJson } from "./text-node/text-node";
+import { TextNode } from "./general-nodes/text-node";
+import { NumberNode } from "./general-nodes/number-node";
+import { NumberNodeJson } from "./general-nodes/number-node/config";
+import { TextNodeJson } from "./general-nodes/text-node/config";
 import { MdTextFields } from "react-icons/md";
+import { TbNumber123 } from "react-icons/tb";
 
 export const NodeRegistry: Record<
 	NodeTypesEnum,
@@ -19,19 +19,11 @@ export const NodeRegistry: Record<
 		component: TextNode,
 		data: TextNodeJson,
 	},
+	[NodeTypesEnum.NUMBER_NODE]: {
+		component: NumberNode,
+		data: NumberNodeJson,
+	},
 };
-
-export const NodeTypeColors = {
-	[NodeTypesEnum.TEXT_NODE]: "text-blue-500",
-};
-
-export const NodeHeaderIcons = {
-	[NodeTypesEnum.TEXT_NODE]: MdTextFields,
-};
-
-export const NodeTypeDefination: any = Object.fromEntries(
-	Object.entries(NodeRegistry).map(([key, value]) => [key, value.component])
-);
 
 export const SidebarButtons: { [key: string]: SidebarButtonProps[] } = {
 	"General Node": [
@@ -39,7 +31,15 @@ export const SidebarButtons: { [key: string]: SidebarButtonProps[] } = {
 			label: "Text Node",
 			type: NodeTypesEnum.TEXT_NODE,
 		},
+		{
+			label: "Number Node",
+			type: NodeTypesEnum.NUMBER_NODE,
+		},
 	],
 	"Extraction Node": [],
 	"Apis Node": [],
 };
+
+export const NodeTypeDefination: any = Object.fromEntries(
+	Object.entries(NodeRegistry).map(([key, value]) => [key, value.component])
+);

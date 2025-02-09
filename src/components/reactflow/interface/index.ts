@@ -3,6 +3,7 @@ import { Node } from "@xyflow/react";
 
 export enum NodeTypesEnum {
 	TEXT_NODE = "TEXT_NODE",
+	NUMBER_NODE = "NUMBER_NODE",
 }
 
 export interface NodeRegistryType {
@@ -42,6 +43,7 @@ export interface AppNodeData {
 	header: NodeHeaderProps;
 	outputValue: ValueTypes;
 	execution?: () => void;
+	isInitialNode: boolean;
 	[key: string]: any;
 }
 

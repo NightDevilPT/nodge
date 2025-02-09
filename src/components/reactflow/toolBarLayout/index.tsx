@@ -9,13 +9,9 @@ import {
 } from "@/components/ui/accordion";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-
 import { SidebarButtonProps } from "../interface";
-import {
-	NodeHeaderIcons,
-	NodeTypeColors,
-	SidebarButtons,
-} from "../nodes/custom-nodes/node-registry";
+import { SidebarButtons } from "../nodes/custom-nodes/node-registry";
+import { NodeHeaderIcons, NodeTypeColors } from "../nodes/custom-nodes/node-utils";
 
 const ToolBarLayout = () => {
 	const allItems = Object.keys(SidebarButtons);

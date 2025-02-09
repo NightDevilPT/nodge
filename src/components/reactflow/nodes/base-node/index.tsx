@@ -3,13 +3,10 @@ import { useReactFlow } from "@xyflow/react";
 
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
-import {
-	NodeHeaderIcons,
-	NodeRegistry,
-	NodeTypeColors,
-} from "../custom-nodes/node-registry";
+import { NodeRegistry } from "../custom-nodes/node-registry";
 import { AppNode, NodeHeaderProps, NodeTypesEnum } from "../../interface";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { NodeHeaderIcons, NodeTypeColors } from "../custom-nodes/node-utils";
 
 export interface BaseNodeProps {
 	children: ReactNode;
@@ -61,14 +58,12 @@ const BaseNode = ({ header, children, nodeId }: BaseNodeProps) => {
 				>
 					<div className={`flex justify-center items-center gap-2`}>
 						<NodeIcon
-							className={`w-4 h-4 ${
+							className={`w-5 h-5 ${
 								NodeTypeColors[type as NodeTypesEnum]
 							}`}
 						/>
 						<h3>{label}</h3>
-						{InfoComponent && (
-							<InfoComponent className="text-red-500" />
-						)}
+						{InfoComponent && <InfoComponent />}
 					</div>
 					<div className={`flex justify-center items-center gap-2`}>
 						{isCopy && CopyIcon && (
@@ -76,9 +71,7 @@ const BaseNode = ({ header, children, nodeId }: BaseNodeProps) => {
 								onClick={handleCopyNode}
 								className="cursor-pointer"
 							>
-								<CopyIcon
-									className={`w-4 h-4 text-green-400`}
-								/>
+								<CopyIcon className={`w-4 h-4`} />
 							</div>
 						)}
 						{isDelete && DeleteIcon && (
@@ -86,9 +79,7 @@ const BaseNode = ({ header, children, nodeId }: BaseNodeProps) => {
 								onClick={handleDeleteNode}
 								className="cursor-pointer"
 							>
-								<DeleteIcon
-									className={`w-4 h-4 text-red-400`}
-								/>
+								<DeleteIcon className={`w-4 h-4`} />
 							</div>
 						)}
 					</div>

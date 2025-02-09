@@ -17,7 +17,7 @@ export function NodgeHoverCard({ children }: NodgeHoverCardProps) {
 				className={`flex justify-center items-center gap-2 cursor-pointer`}
 				asChild
 			>
-				<LuBadgeInfo className="w-4 h-4 text-gray-500" />
+				<LuBadgeInfo className="w-4 h-4 text-gray-400" />
 			</HoverCardTrigger>
 			<HoverCardContent className="px-3 py-2">
 				{children}

@@ -3,6 +3,7 @@ import { ReactFlowProvider } from "@xyflow/react";
 
 import FlowEditor from "./flow-editor";
 import ToolBarLayout from "./toolBarLayout";
+import { NodgeThemeToggle } from "../shared/nodge-theme-toggle";
 
 const ReactFlowSetup = () => {
 	return (
@@ -12,6 +13,7 @@ const ReactFlowSetup = () => {
 					className={`w-full px-5 h-full flex justify-between bg-background items-center border-b-[1px] border-b-secondary`}
 				>
 					<h1 className={`text-xl`}>Workflow 1</h1>
+					<NodgeThemeToggle />
 				</div>
 				<div
 					className={`w-full h-full grid grid-cols-[320px,_1fr] gap-2`}
