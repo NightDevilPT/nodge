@@ -6,6 +6,14 @@ export enum NodeTypesEnum {
 	NUMBER_NODE = "NUMBER_NODE",
 }
 
+export enum NodeApiMethodsEnum {
+	GET = "GET",
+	POST = "POST",
+	PUT = "PUT",
+	DELETE = "DELETE",
+	PATCH = "PATCH",
+}
+
 export interface NodeRegistryType {
 	[key: string]: {
 		component: React.ElementType;
@@ -35,7 +43,25 @@ export interface NodeHeaderProps {
 	};
 	icon: React.ElementType; // Node icon
 	info?: React.ElementType;
-	type?:NodeTypesEnum;
+	type?: NodeTypesEnum;
+}
+
+/** 🔹 API Response Tree (Supports Nested Data) */
+export interface ResponseTreeNode {
+	key: string; // e.g., "user", "user.name", "data[0]"
+	valueType: "object" | "array" | "string" | "number" | "boolean" | "null";
+	children?: ResponseTreeNode[];
+	isExpandable?: boolean; // For large arrays
+}
+
+/** 🔹 API Node Specific Data */
+export interface APINodeData {
+	url: string; // API endpoint URL
+	method: NodeApiMethodsEnum; // HTTP method
+	headers?: { key: string; value: string }[]; // API headers
+	body?: any; // API request body
+	responseTree?: ResponseTreeNode[]; // Parsed API response structure
+	selectedKeys?: string[]; // User-selected response keys for output
 }
 
 export interface AppNodeData {
@@ -44,6 +70,7 @@ export interface AppNodeData {
 	outputValue: ValueTypes;
 	execution?: () => void;
 	isInitialNode: boolean;
+	apiData?: APINodeData; // Optional API data for API nodes
 	[key: string]: any;
 }
 

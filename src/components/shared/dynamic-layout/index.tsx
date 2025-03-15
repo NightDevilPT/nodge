@@ -33,7 +33,7 @@ const NodgeDynamicLayout = ({ children }: { children: ReactNode }) => {
 					<NodgeSidebar />
 				</div>
 			</div>
-			<div className={`w-full h-full grid grid-rows-[70px,_1fr]`}>
+			<div className={`w-full h-full overflow-y-auto grid grid-rows-[70px,_1fr]`}>
 				<div
 					className={`w-full h-full border-b border-b-secondary flex justify-between items-center px-5 py-2`}
 				>
@@ -43,7 +43,7 @@ const NodgeDynamicLayout = ({ children }: { children: ReactNode }) => {
 						<NodgeUserNav />
 					</div>
 				</div>
-				<div className={`w-full h-full`}>{children}</div>
+				<div className={`w-full h-full overflow-y-auto`}>{children}</div>
 			</div>
 		</main>
 	);
