@@ -4,12 +4,12 @@ import {
 	NodeTypesEnum,
 	SidebarButtonProps,
 } from "../../interface";
+import { ApiNode } from "./network-nodes/api-node";
 import { TextNode } from "./general-nodes/text-node";
 import { NumberNode } from "./general-nodes/number-node";
-import { NumberNodeJson } from "./general-nodes/number-node/config";
+import { ApiNodeJson } from "./network-nodes/api-node/config";
 import { TextNodeJson } from "./general-nodes/text-node/config";
-import { MdTextFields } from "react-icons/md";
-import { TbNumber123 } from "react-icons/tb";
+import { NumberNodeJson } from "./general-nodes/number-node/config";
 
 export const NodeRegistry: Record<
 	NodeTypesEnum,
@@ -22,6 +22,10 @@ export const NodeRegistry: Record<
 	[NodeTypesEnum.NUMBER_NODE]: {
 		component: NumberNode,
 		data: NumberNodeJson,
+	},
+	[NodeTypesEnum.API_NODE]: {
+		component: ApiNode,
+		data: ApiNodeJson, // Define API node data structure here
 	},
 };
 
@@ -37,7 +41,12 @@ export const SidebarButtons: { [key: string]: SidebarButtonProps[] } = {
 		},
 	],
 	"Extraction Node": [],
-	"Apis Node": [],
+	"Network Node": [
+		{
+			label: "API Node",
+			type: NodeTypesEnum.API_NODE,
+		},
+	],
 };
 
 export const NodeTypeDefination: any = Object.fromEntries(

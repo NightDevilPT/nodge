@@ -4,6 +4,7 @@ import { Node } from "@xyflow/react";
 export enum NodeTypesEnum {
 	TEXT_NODE = "TEXT_NODE",
 	NUMBER_NODE = "NUMBER_NODE",
+	API_NODE = "API_NODE",
 }
 
 export enum NodeApiMethodsEnum {
@@ -59,6 +60,7 @@ export interface APINodeData {
 	url: string; // API endpoint URL
 	method: NodeApiMethodsEnum; // HTTP method
 	headers?: { key: string; value: string }[]; // API headers
+	query?: { key: string; value: string }[]; // API headers
 	body?: any; // API request body
 	responseTree?: ResponseTreeNode[]; // Parsed API response structure
 	selectedKeys?: string[]; // User-selected response keys for output

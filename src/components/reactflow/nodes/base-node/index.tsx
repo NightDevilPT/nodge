@@ -5,16 +5,17 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { NodeRegistry } from "../custom-nodes/node-registry";
 import { AppNode, NodeHeaderProps, NodeTypesEnum } from "../../interface";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NodeHeaderIcons, NodeTypeColors } from "../custom-nodes/node-utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export interface BaseNodeProps {
 	children: ReactNode;
 	header: NodeHeaderProps;
 	nodeId: string;
+	className?: string;
 }
 
-const BaseNode = ({ header, children, nodeId }: BaseNodeProps) => {
+const BaseNode = ({ header, children, nodeId, className }: BaseNodeProps) => {
 	const {
 		label,
 		copy: { isCopy, copyIcon: CopyIcon },
@@ -51,7 +52,11 @@ const BaseNode = ({ header, children, nodeId }: BaseNodeProps) => {
 	};
 
 	return (
-		<Card className={cn(`px-3 py-2.5 space-y-2 rounded-md min-w-80`)}>
+		<Card
+			className={cn(
+				`px-3 py-2.5 space-y-2 rounded-md min-w-80 ${className}`
+			)}
+		>
 			<CardHeader className={cn(`p-0`)}>
 				<CardTitle
 					className={cn(` flex justify-between items-center gap-2`)}
