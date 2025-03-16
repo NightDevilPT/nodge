@@ -42,6 +42,10 @@ export interface NodeHeaderProps {
 		isDelete: boolean; // Whether the node can be deleted
 		deleteIcon?: React.ElementType; // Icon for the delete action
 	};
+	execute?: {
+		isExecute: boolean; // Whether the node can be deleted
+		ExecuteIcon?: React.ElementType; // Icon for the delete action
+	};
 	icon: React.ElementType; // Node icon
 	info?: React.ElementType;
 	type?: NodeTypesEnum;
@@ -55,13 +59,24 @@ export interface ResponseTreeNode {
 	isExpandable?: boolean; // For large arrays
 }
 
+export interface ApiQueryHeader {
+	key: string;
+	value: string;
+}
+
+export interface ApiBody {
+	key: string;
+	value: string;
+	type: "text" | "file" | "number";
+}
+
 /** 🔹 API Node Specific Data */
 export interface APINodeData {
 	url: string; // API endpoint URL
 	method: NodeApiMethodsEnum; // HTTP method
-	headers?: { key: string; value: string }[]; // API headers
-	query?: { key: string; value: string }[]; // API headers
-	body?: any; // API request body
+	headers?: ApiQueryHeader[]; // API headers
+	query?: ApiQueryHeader[]; // API headers
+	body?: ApiBody[]; // API request body
 	responseTree?: ResponseTreeNode[]; // Parsed API response structure
 	selectedKeys?: string[]; // User-selected response keys for output
 }
@@ -69,6 +84,7 @@ export interface APINodeData {
 export interface AppNodeData {
 	type: NodeTypesEnum;
 	header: NodeHeaderProps;
+	inputValue:ValueTypes;
 	outputValue: ValueTypes;
 	execution?: () => void;
 	isInitialNode: boolean;

@@ -20,9 +20,11 @@ const BaseNode = ({ header, children, nodeId, className }: BaseNodeProps) => {
 		label,
 		copy: { isCopy, copyIcon: CopyIcon },
 		dlt: { isDelete, deleteIcon: DeleteIcon },
+		execute,
 		info: InfoComponent,
 		type,
 	} = header;
+
 	const { getNodes, setNodes, getNode } = useReactFlow();
 	const NodeIcon = NodeHeaderIcons[type as NodeTypesEnum];
 
@@ -51,6 +53,11 @@ const BaseNode = ({ header, children, nodeId, className }: BaseNodeProps) => {
 		}
 	};
 
+	const handleExecuteNode = () => {
+		const nodeData = getNode(nodeId as string);
+		console.log(nodeData, "Execution triggered");
+	};
+
 	return (
 		<Card
 			className={cn(
@@ -76,7 +83,7 @@ const BaseNode = ({ header, children, nodeId, className }: BaseNodeProps) => {
 								onClick={handleCopyNode}
 								className="cursor-pointer"
 							>
-								<CopyIcon className={`w-4 h-4`} />
+								<CopyIcon className={`w-4 h-4 text-blue-400`} />
 							</div>
 						)}
 						{isDelete && DeleteIcon && (
@@ -84,9 +91,23 @@ const BaseNode = ({ header, children, nodeId, className }: BaseNodeProps) => {
 								onClick={handleDeleteNode}
 								className="cursor-pointer"
 							>
-								<DeleteIcon className={`w-4 h-4`} />
+								<DeleteIcon
+									className={`w-4 h-4 text-red-400`}
+								/>
 							</div>
 						)}
+						{execute &&
+							execute.isExecute &&
+							execute.ExecuteIcon && (
+								<div
+									onClick={handleExecuteNode}
+									className="cursor-pointer"
+								>
+									<execute.ExecuteIcon
+										className={`w-4 h-4 text-green-400`}
+									/>
+								</div>
+							)}
 					</div>
 				</CardTitle>
 			</CardHeader>

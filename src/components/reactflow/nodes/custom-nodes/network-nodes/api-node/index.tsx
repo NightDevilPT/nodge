@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { TbTrash } from "react-icons/tb";
 
 import {
@@ -8,43 +8,103 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import {
+	ApiBody,
+	ApiQueryHeader,
+	AppNode,
+	NodeApiMethodsEnum,
+} from "@/components/reactflow/interface";
 import BaseNode from "../../../base-node";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { AppNode, NodeApiMethodsEnum } from "@/components/reactflow/interface";
+import { useUpdateNodeData } from "@/hooks/update-node-data";
 
-// Type Definitions
-interface KeyValuePair {
-	key: string;
-	value: string;
+interface KeyValueFieldProps {
+	items: ApiQueryHeader[];
+	setItems: React.Dispatch<React.SetStateAction<ApiQueryHeader[]>>;
+	title: string;
 }
 
-interface DynamicField {
-	label: string;
-	type: "text" | "file" | "number";
-	value: string;
-}
+const KeyValueField: React.FC<KeyValueFieldProps> = ({
+	items,
+	setItems,
+	title,
+}) => {
+	const updateItem = useCallback(
+		(index: number, key: keyof ApiQueryHeader, value: string) => {
+			setItems((prev) =>
+				prev.map((item, i) =>
+					i === index ? { ...item, [key]: value } : item
+				)
+			);
+		},
+		[setItems]
+	);
+
+	const removeItem = (index: number) => {
+		setItems((prev) => prev.filter((_, i) => i !== index));
+	};
+
+	return (
+		<div className="grid gap-2">
+			<Label>{title}</Label>
+			{items.map((item, index) => (
+				<div
+					key={index}
+					className="grid grid-cols-[1fr,1fr,40px] gap-2"
+				>
+					<Input
+						type="text"
+						placeholder="Key"
+						value={item.key}
+						onChange={(e) =>
+							updateItem(index, "key", e.target.value)
+						}
+					/>
+					<Input
+						type="text"
+						placeholder="Value"
+						value={item.value}
+						onChange={(e) =>
+							updateItem(index, "value", e.target.value)
+						}
+					/>
+					<Button
+						className="bg-red-500 text-white"
+						onClick={() => removeItem(index)}
+					>
+						<TbTrash />
+					</Button>
+				</div>
+			))}
+			<Button
+				variant="secondary"
+				onClick={() => setItems([...items, { key: "", value: "" }])}
+			>
+				Add {title}
+			</Button>
+		</div>
+	);
+};
 
 export const ApiNode = ({ data, id }: AppNode) => {
-	if (!data.apiData) return null;
-
 	const { header, apiData } = data;
-
-	// State Definitions
-	const [url, setUrl] = useState(apiData.url);
-	const [method, setMethod] = useState(apiData.method);
-	const [headers, setHeaders] = useState<KeyValuePair[]>(
-		apiData.headers?.length
-			? apiData.headers
-			: [{ key: "Content-Type", value: "application/json" }]
+	const [url, setUrl] = useState<string>("");
+	const [method, setMethod] = useState<NodeApiMethodsEnum>(
+		NodeApiMethodsEnum.GET
 	);
-	const [query, setQuery] = useState<KeyValuePair[]>(
-		apiData.query?.length ? apiData.query : [{ key: "", value: "" }]
-	);
-	const [dynamicFields, setDynamicFields] = useState<DynamicField[]>([
-		{ label: "", type: "text", value: "" },
+	const [headers, setHeaders] = useState<ApiQueryHeader[]>([
+		{ key: "Content-Type", value: "application/json" },
 	]);
+	const [query, setQuery] = useState<ApiQueryHeader[]>([
+		{ key: "", value: "" },
+	]);
+	const [body, setBody] = useState<ApiBody[]>([
+		{ key: "", type: "text", value: "" },
+	]);
+
+	const updateNodeData = useUpdateNodeData();
 
 	// Generic Update Handlers
 	const updateStateArray = <T,>(
@@ -68,16 +128,11 @@ export const ApiNode = ({ data, id }: AppNode) => {
 	};
 
 	// UI Render Functions
-	const renderInputField = (field: DynamicField, index: number) => {
+	const renderInputField = (field: ApiBody, index: number) => {
 		const inputProps = {
 			value: field.value,
 			onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-				updateStateArray(
-					setDynamicFields,
-					index,
-					"value",
-					e.target.value
-				),
+				updateStateArray(setBody, index, "value", e.target.value),
 			placeholder: `Enter ${field.type}`,
 		};
 
@@ -86,7 +141,7 @@ export const ApiNode = ({ data, id }: AppNode) => {
 				type="file"
 				onChange={(e) =>
 					updateStateArray(
-						setDynamicFields,
+						setBody,
 						index,
 						"value",
 						e.target.files?.[0] || ""
@@ -97,6 +152,24 @@ export const ApiNode = ({ data, id }: AppNode) => {
 			<Input {...inputProps} type={field.type} />
 		);
 	};
+
+	// Ensure `useEffect` is at the top level
+	useEffect(() => {
+		updateNodeData(id, { apiData: { url, method, headers, query, body } });
+	}, [id, url, method, headers, query, body, updateNodeData]);
+
+	// Now handle conditional UI
+	if (!apiData) {
+		return (
+			<BaseNode
+				header={header}
+				nodeId={id}
+				className="min-w-[500px] max-w-[700px]"
+			>
+				<div>No API Data Available</div>
+			</BaseNode>
+		);
+	}
 
 	return (
 		<BaseNode
@@ -138,126 +211,36 @@ export const ApiNode = ({ data, id }: AppNode) => {
 				</div>
 
 				{/* Headers Section */}
-				<div className="grid gap-2">
-					<Label>Headers</Label>
-					{headers.map((header, index) => (
-						<div
-							key={index}
-							className="grid grid-cols-[1fr,1fr,40px] gap-2"
-						>
-							<Input
-								type="text"
-								placeholder="Key"
-								value={header.key}
-								onChange={(e) =>
-									updateStateArray(
-										setHeaders,
-										index,
-										"key",
-										e.target.value
-									)
-								}
-							/>
-							<Input
-								type="text"
-								placeholder="Value"
-								value={header.value}
-								onChange={(e) =>
-									updateStateArray(
-										setHeaders,
-										index,
-										"value",
-										e.target.value
-									)
-								}
-							/>
-							<Button
-								className="bg-red-500 text-white"
-								onClick={() => removeItem(setHeaders, index)}
-							>
-								<TbTrash />
-							</Button>
-						</div>
-					))}
-					<Button
-						variant="secondary"
-						onClick={() =>
-							setHeaders([...headers, { key: "", value: "" }])
-						}
-					>
-						Add Header
-					</Button>
-				</div>
+				<KeyValueField
+					items={headers}
+					setItems={setHeaders}
+					title="Headers"
+				/>
 
 				{/* Query Params Section */}
-				<div className="grid gap-2">
-					<Label>Query Params</Label>
-					{query.map((param, index) => (
-						<div
-							key={index}
-							className="grid grid-cols-[1fr,1fr,40px] gap-2"
-						>
-							<Input
-								type="text"
-								placeholder="Key"
-								value={param.key}
-								onChange={(e) =>
-									updateStateArray(
-										setQuery,
-										index,
-										"key",
-										e.target.value
-									)
-								}
-							/>
-							<Input
-								type="text"
-								placeholder="Value"
-								value={param.value}
-								onChange={(e) =>
-									updateStateArray(
-										setQuery,
-										index,
-										"value",
-										e.target.value
-									)
-								}
-							/>
-							<Button
-								className="bg-red-500 text-white"
-								onClick={() => removeItem(setQuery, index)}
-							>
-								<TbTrash />
-							</Button>
-						</div>
-					))}
-					<Button
-						variant="secondary"
-						onClick={() =>
-							setQuery([...query, { key: "", value: "" }])
-						}
-					>
-						Add Query Param
-					</Button>
-				</div>
+				<KeyValueField
+					items={query}
+					setItems={setQuery}
+					title="Query Params"
+				/>
 
-				{/* Dynamic Fields Section */}
+				{/* Body Section */}
 				<div className="grid gap-2">
-					<Label>Dynamic Fields</Label>
-					{dynamicFields.map((field, index) => (
+					<Label>Body</Label>
+					{body.map((field, index) => (
 						<div
 							key={index}
 							className="grid grid-cols-[150px,100px,1fr,40px] gap-2"
 						>
 							<Input
 								type="text"
-								placeholder="Field Label"
-								value={field.label}
+								placeholder="Key"
+								value={field.key}
 								onChange={(e) =>
 									updateStateArray(
-										setDynamicFields,
+										setBody,
 										index,
-										"label",
+										"key",
 										e.target.value
 									)
 								}
@@ -266,7 +249,7 @@ export const ApiNode = ({ data, id }: AppNode) => {
 								value={field.type}
 								onValueChange={(value) =>
 									updateStateArray(
-										setDynamicFields,
+										setBody,
 										index,
 										"type",
 										value
@@ -287,9 +270,7 @@ export const ApiNode = ({ data, id }: AppNode) => {
 							{renderInputField(field, index)}
 							<Button
 								className="bg-red-500 text-white"
-								onClick={() =>
-									removeItem(setDynamicFields, index)
-								}
+								onClick={() => removeItem(setBody, index)}
 							>
 								<TbTrash />
 							</Button>
@@ -298,13 +279,13 @@ export const ApiNode = ({ data, id }: AppNode) => {
 					<Button
 						variant="secondary"
 						onClick={() =>
-							setDynamicFields([
-								...dynamicFields,
-								{ label: "", type: "text", value: "" },
+							setBody([
+								...body,
+								{ key: "", type: "text", value: "" },
 							])
 						}
 					>
-						Add Dynamic Field
+						Add Body Field
 					</Button>
 				</div>
 			</div>

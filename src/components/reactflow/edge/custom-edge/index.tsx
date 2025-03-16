@@ -10,7 +10,7 @@ import { IoClose } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 
 export default function DeletableEdge(props: EdgeProps) {
-	const { setEdges,getEdge } = useReactFlow();
+	const { setEdges, getEdge } = useReactFlow();
 	const [edgePath, labelX, labelY] = getSmoothStepPath(props);
 
 	return (
@@ -29,16 +29,16 @@ export default function DeletableEdge(props: EdgeProps) {
 					}}
 				>
 					<Button
-						variant={"outline"}
+						variant={"secondary"}
 						onClick={(e) => {
-							console.log(getEdge(props.id),'EDGE DATA')
+							console.log(getEdge(props.id), "EDGE DATA");
 							setEdges((edges) =>
 								edges.filter((edge) => edge.id !== props.id)
 							);
 						}}
-						size={"icon"}
+						className={`!w-8 !h-8 rounded-full`}
 					>
-						<IoClose className={`w-full h-full`} />
+						<IoClose className={`w-auto h-auto`} />
 					</Button>
 				</div>
 			</EdgeLabelRenderer>

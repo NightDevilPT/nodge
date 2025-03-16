@@ -1,6 +1,5 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import {
 	addEdge,
 	Background,
@@ -13,6 +12,7 @@ import {
 	useNodesState,
 	useReactFlow,
 } from "@xyflow/react";
+import { useTheme } from "next-themes";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
 	NodeRegistry,

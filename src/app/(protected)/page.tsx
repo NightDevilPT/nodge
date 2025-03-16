@@ -1,9 +1,6 @@
 import NodgeCards from "@/components/shared/node-card";
 import NodgeChart from "@/components/shared/nodge-charts";
-import {
-	chartConfig,
-	chartData,
-} from "@/dummy-data/chart-dummy-data";
+import { chartConfig, chartData } from "@/dummy-data/chart-dummy-data";
 import { DummCardData, NodeCardProps } from "@/interface/card.interface";
 
 export default function Home() {

@@ -1,3 +1,4 @@
+import { IoPlayOutline } from "react-icons/io5";
 import { TbCopy, TbTrash } from "react-icons/tb";
 
 import NumberNodeInfo from "./info";
@@ -15,11 +16,16 @@ export const NumberNodeJson: AppNodeData = {
 			isDelete: true,
 			deleteIcon: TbTrash,
 		},
+		execute: {
+			isExecute: true,
+			ExecuteIcon: IoPlayOutline, // Add this icon to your NodeHeaderIcons
+		},
 		icon: NodeHeaderIcons[NodeTypesEnum.NUMBER_NODE],
 		info: NumberNodeInfo,
 		label: "Number Node",
 		type: NodeTypesEnum.NUMBER_NODE,
 	},
-	isInitialNode: true,
+	inputValue: 0,
+	isInitialNode: false,
 	outputValue: "",
 };
