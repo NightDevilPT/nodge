@@ -8,37 +8,36 @@ export enum NodgeType {
 }
 
 interface NodgeHandleProps {
-	nodeId:string;
+	nodeId: string;
 	type: NodgeType;
 	color?: string;
 	isConnectable?: boolean;
 }
 
-const NodgeHandle: React.FC<NodgeHandleProps> = ({
-	type,
-	isConnectable = true,
-	color,
-	nodeId
-}) => {
-	const handleId = useMemo(() => generateUuid(nodeId, type), [nodeId, type]);
-	console.log(`Generated Handle ID: ${handleId}`);
-	return (
-		<Handle
-			type={type}
-			position={
-				type === NodgeType.source ? Position.Right : Position.Left
-			}
-			id={handleId}
-			className={`!w-3 !h-3 ${
-				type === NodgeType.source
-					? "!-right-3 !top-2/3"
-					: "!-left-3 !top-2/3"
-			} ${
-				type === NodgeType.source ? "!bg-yellow-500" : "!bg-blue-500"
-			} ${color}`}
-			isConnectable={isConnectable}
-		/>
-	);
-};
+export const NodgeHandle = React.memo(
+	({ type, isConnectable = true, color, nodeId }: NodgeHandleProps) => {
+		const handleId = useMemo(() => generateUuid(nodeId, type), [nodeId, type]);
 
-export default NodgeHandle;
+		console.log(`Rendering NodgeHandle - ID: ${handleId}, Type: ${type}`);
+
+		return (
+			<Handle
+				type={type}
+				position={type === NodgeType.source ? Position.Right : Position.Left}
+				id={handleId}
+				className={`!w-3 !h-3 ${
+					type === NodgeType.source ? "!-right-3 !top-2/3" : "!-left-3 !top-2/3"
+				} ${type === NodgeType.source ? "!bg-yellow-500" : "!bg-blue-500"} ${color}`}
+				isConnectable={isConnectable}
+			/>
+		);
+	},
+	(prevProps, nextProps) =>
+		prevProps.nodeId === nextProps.nodeId &&
+		prevProps.type === nextProps.type &&
+		prevProps.color === nextProps.color &&
+		prevProps.isConnectable === nextProps.isConnectable
+);
+
+// ✅ Fix: Add a display name
+NodgeHandle.displayName = "NodgeHandle";

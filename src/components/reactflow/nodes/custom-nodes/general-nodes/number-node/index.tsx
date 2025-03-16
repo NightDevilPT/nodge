@@ -3,9 +3,9 @@ import React from "react";
 import BaseNode from "../../../base-node";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { AppNode } from "@/components/reactflow/interface";
 import { useUpdateNodeData } from "@/hooks/update-node-data";
-import { AppNode, AppNodeData } from "@/components/reactflow/interface";
-import NodgeHandle, { NodgeType } from "@/components/shared/nodge-handle";
+import { NodgeHandle, NodgeType } from "@/components/shared/nodge-handle";
 
 export const NumberNode = ({ data, id }: AppNode) => {
 	const { header, type, isInitialNode } = data;

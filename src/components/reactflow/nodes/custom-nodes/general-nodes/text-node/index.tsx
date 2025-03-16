@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { AppNode } from "@/components/reactflow/interface";
 import { useUpdateNodeData } from "@/hooks/update-node-data";
-import NodgeHandle, { NodgeType } from "@/components/shared/nodge-handle";
+import { NodgeHandle, NodgeType } from "@/components/shared/nodge-handle";
 
 export const TextNode = ({ data, id }: AppNode) => {
 	const { header, type, isInitialNode } = data;

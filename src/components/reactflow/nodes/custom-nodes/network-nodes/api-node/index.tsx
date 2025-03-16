@@ -156,7 +156,7 @@ export const ApiNode = ({ data, id }: AppNode) => {
 	// Ensure `useEffect` is at the top level
 	useEffect(() => {
 		updateNodeData(id, { apiData: { url, method, headers, query, body } });
-	}, [id, url, method, headers, query, body, updateNodeData]);
+	}, [id, url, method, headers, query, body]);
 
 	// Now handle conditional UI
 	if (!apiData) {

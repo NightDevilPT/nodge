@@ -67,6 +67,7 @@ const NodgeAreaChart=({
 						dataKey={key}
 						type="monotone"
 						fill={config[key].color}
+						fillOpacity={0.2}
 						stroke={config[key].color}
 						strokeWidth={2}
 						stackId="a"
