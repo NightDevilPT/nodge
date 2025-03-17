@@ -31,6 +31,11 @@ class ApiService {
 	async delete(id: string): Promise<void> {
 		await axiosInstance.delete(this.endpoint + `/${id}`);
 	}
+
+	// === DELETE ===
+	async get(endPoint:string): Promise<any> {
+		return await axiosInstance.get(this.endpoint + `/${endPoint}`); 
+	}
 }
 
 export default ApiService;

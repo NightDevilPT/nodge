@@ -1,8 +1,8 @@
-import { FiHome } from "react-icons/fi";
+import { FiKey } from "react-icons/fi"; // Add appropriate icons
 import { GoHomeFill } from "react-icons/go";
+import { FiHome, FiSettings } from "react-icons/fi";
+import { MdSettings, MdVpnKey } from "react-icons/md"; // Add filled icon for credentials
 import { FaShareNodes, FaSquareShareNodes } from "react-icons/fa6";
-import { FiKey, FiDatabase } from "react-icons/fi"; // Add appropriate icons
-import { MdVpnKey } from "react-icons/md"; // Add filled icon for credentials
 import { NodeSidebarRouteProps } from "@/interface/route.interface";
 
 export const nodgeSidebarRoute: NodeSidebarRouteProps[] = [
@@ -26,5 +26,12 @@ export const nodgeSidebarRoute: NodeSidebarRouteProps[] = [
     fillIcon: MdVpnKey,
     label: "Credentials",
     link: "/credentials", // Corrected route link
+  },
+  {
+    id: crypto.randomUUID(),
+    icon: FiSettings,
+    fillIcon: MdSettings,
+    label: "Settings",
+    link: "/settings", // Corrected route link
   },
 ];
