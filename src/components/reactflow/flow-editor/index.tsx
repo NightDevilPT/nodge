@@ -20,6 +20,7 @@ import {
 } from "../nodes/custom-nodes/node-registry";
 import DeletableEdge from "../edge/custom-edge";
 import { AppNode, NodeTypesEnum } from "../interface";
+import { generateUuid } from "@/lib/uuid-generator";
 
 const snapGrid: [number, number] = [20, 20];
 
@@ -61,11 +62,17 @@ const FlowEditor = () => {
 			// Get default node data from NodeRegistry
 			const nodeConfig = NodeRegistry[taskType];
 			const nodeId = crypto.randomUUID();
+			const inputs = nodeConfig.data?.inputs?.map((input) => ({
+				...input,
+				sourceId: generateUuid(`${nodeId}:${taskType}`),
+				targetId: generateUuid(`${nodeId}:${taskType}`),
+				id: generateUuid(`${nodeId}:INPUT`),
+			}));
 			const newNode: AppNode = {
 				id: `${taskType}:${nodeId}`,
 				type: taskType,
 				position,
-				data: nodeConfig.data,
+				data: { ...nodeConfig.data, inputs },
 			};
 			setNodes((nds) => [...nds, newNode]);
 		},

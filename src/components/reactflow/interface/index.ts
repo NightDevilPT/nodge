@@ -2,17 +2,7 @@ import React from "react";
 import { Node } from "@xyflow/react";
 
 export enum NodeTypesEnum {
-	TEXT_NODE = "TEXT_NODE",
-	NUMBER_NODE = "NUMBER_NODE",
-	API_NODE = "API_NODE",
-}
-
-export enum NodeApiMethodsEnum {
-	GET = "GET",
-	POST = "POST",
-	PUT = "PUT",
-	DELETE = "DELETE",
-	PATCH = "PATCH",
+	TEXT_NODE = "TEXT_NODE"
 }
 
 export interface NodeRegistryType {
@@ -51,44 +41,36 @@ export interface NodeHeaderProps {
 	type?: NodeTypesEnum;
 }
 
-/** 🔹 API Response Tree (Supports Nested Data) */
-export interface ResponseTreeNode {
-	key: string; // e.g., "user", "user.name", "data[0]"
-	valueType: "object" | "array" | "string" | "number" | "boolean" | "null";
-	children?: ResponseTreeNode[];
-	isExpandable?: boolean; // For large arrays
+export interface InputHandlerProps {
+	id?: string;
+	label: string;
+	value: ValueTypes;
+	type: "text" | "number" | "file" | "select";
+	onChange?: (value: ValueTypes) => void;
+	options?: { key: string; value: string }[];
+	placeholder?: string;
+	required?: boolean;
+	sourceId?: string | null;
+	isShowSource?: boolean;
+	targetId?: string | null;
+	isShowTarget?: boolean;
+	mapped: {
+		connectedSource: string | null;
+		connectedTarget: string | null;
+	};
 }
 
-export interface ApiQueryHeader {
-	key: string;
-	value: string;
-}
-
-export interface ApiBody {
-	key: string;
-	value: string;
-	type: "text" | "file" | "number";
-}
-
-/** 🔹 API Node Specific Data */
-export interface APINodeData {
-	url: string; // API endpoint URL
-	method: NodeApiMethodsEnum; // HTTP method
-	headers?: ApiQueryHeader[]; // API headers
-	query?: ApiQueryHeader[]; // API headers
-	body?: ApiBody[]; // API request body
-	responseTree?: ResponseTreeNode[]; // Parsed API response structure
-	selectedKeys?: string[]; // User-selected response keys for output
+export interface InputProps {
+	input:InputHandlerProps;
+	nodeId: string;
 }
 
 export interface AppNodeData {
 	type: NodeTypesEnum;
 	header: NodeHeaderProps;
-	inputValue:ValueTypes;
-	outputValue: ValueTypes;
+	inputs?: InputHandlerProps[]; // Input fields for the node
 	execution?: () => void;
 	isInitialNode: boolean;
-	apiData?: APINodeData; // Optional API data for API nodes
 	[key: string]: any;
 }
 

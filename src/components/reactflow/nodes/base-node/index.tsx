@@ -26,7 +26,7 @@ const BaseNode = ({ header, children, nodeId, className }: BaseNodeProps) => {
 	} = header;
 
 	const { getNodes, setNodes, getNode } = useReactFlow();
-	const NodeIcon = NodeHeaderIcons[type as NodeTypesEnum];
+	const NodeIcon = NodeHeaderIcons[type as NodeTypesEnum] || header.icon;
 
 	const handleDeleteNode = () => {
 		const updatedNodes = getNodes().filter((node) => node.id !== nodeId);
@@ -60,11 +60,9 @@ const BaseNode = ({ header, children, nodeId, className }: BaseNodeProps) => {
 
 	return (
 		<Card
-			className={cn(
-				`px-3 py-2.5 space-y-2 rounded-md min-w-80 ${className}`
-			)}
+			className={cn(`py-2.5 space-y-2 rounded-md min-w-80 ${className}`)}
 		>
-			<CardHeader className={cn(`p-0`)}>
+			<CardHeader className={cn(`p-0 px-3`)}>
 				<CardTitle
 					className={cn(` flex justify-between items-center gap-2`)}
 				>
@@ -112,7 +110,7 @@ const BaseNode = ({ header, children, nodeId, className }: BaseNodeProps) => {
 				</CardTitle>
 			</CardHeader>
 			<Separator orientation="horizontal" className={cn(`my-1`)} />
-			<CardContent className={`p-0`}>{children}</CardContent>
+			<CardContent className={`p-0 px-3`}>{children}</CardContent>
 		</Card>
 	);
 };

@@ -1,13 +1,13 @@
-import { IoPlayOutline } from "react-icons/io5";
-import { TbCopy, TbTrash } from "react-icons/tb";
-
-import TextNodeInfo from "./info";
-import { NodeHeaderIcons } from "../../node-utils";
+import { MdOutlineTextFields } from "react-icons/md";
+import { TbCopy, TbTrash, TbPlayerPlay } from "react-icons/tb";
 import { AppNodeData, NodeTypesEnum } from "@/components/reactflow/interface";
+import TextNodeInfo from "./info";
 
 export const TextNodeJson: AppNodeData = {
 	type: NodeTypesEnum.TEXT_NODE,
 	header: {
+		label: "Text Node",
+		type: NodeTypesEnum.TEXT_NODE,
 		copy: {
 			isCopy: true,
 			copyIcon: TbCopy,
@@ -16,16 +16,28 @@ export const TextNodeJson: AppNodeData = {
 			isDelete: true,
 			deleteIcon: TbTrash,
 		},
-		execute:{
+		execute: {
 			isExecute: true,
-            ExecuteIcon: IoPlayOutline, // Add this icon to your NodeHeaderIcons
+			ExecuteIcon: TbPlayerPlay,
 		},
-		icon: NodeHeaderIcons[NodeTypesEnum.TEXT_NODE],
-		info: TextNodeInfo,
-		label: "Text Node",
-		type: NodeTypesEnum.TEXT_NODE,
+		icon: MdOutlineTextFields,
+		info: TextNodeInfo
 	},
-	inputValue:"",
-	isInitialNode:false,
-	outputValue: "",
+	inputs: [
+		{
+			label: "Enter Text",
+			value: "",
+			type: "text",
+			required: true,
+			sourceId: null,
+			targetId: null,
+			isShowSource: true,
+			isShowTarget: true,
+			mapped: {
+				connectedSource: null,
+				connectedTarget: null,
+			},
+		},
+	],
+	isInitialNode: true,
 };
