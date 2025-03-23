@@ -9,7 +9,7 @@ import NodgeDynamicLayout from "@/components/shared/dynamic-layout";
 const Layout = async ({ children }: { children: ReactNode }) => {
 	const cookieStore = await cookies();
 	const accessToken = cookieStore.get("accessToken")?.value;
-	const refreshToken = cookieStore.get("refreshToken")?.value;
+	// const refreshToken = cookieStore.get("refreshToken")?.value;
 
 	if (!accessToken ) {
 		redirect("/auth/login");

@@ -2,7 +2,9 @@ import React from "react";
 import { Node } from "@xyflow/react";
 
 export enum NodeTypesEnum {
-	TEXT_NODE = "TEXT_NODE"
+	TEXT_NODE = "TEXT_NODE",
+	NUMBER_NODE = "NUMBER_NODE",
+	FILE_NODE = "FILE_NODE",
 }
 
 export interface NodeRegistryType {

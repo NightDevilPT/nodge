@@ -5,16 +5,15 @@ import {
 	AppNode,
 	AppNodeData,
 	InputProps,
-	NodeTypesEnum,
 } from "@/components/reactflow/interface";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUpdateNodeData } from "@/hooks/update-node-data";
 import { NodgeHandle, NodgeType } from "@/components/shared/nodge-handle";
 
-const TextInput = ({ nodeId, input }: InputProps) => {
+const NumberInput = ({ nodeId, input }: InputProps) => {
 	const { label, placeholder } = input;
-	const { getNode, setNodes } = useReactFlow();
+	const { getNode } = useReactFlow();
 	const updateNodeData = useUpdateNodeData();
 	const currentNode = getNode(nodeId) as AppNode | undefined;
 	if (!currentNode) return null;
@@ -34,7 +33,7 @@ const TextInput = ({ nodeId, input }: InputProps) => {
 		<div className="w-full h-auto flex justify-start items-start flex-col gap-2 relative">
 			<Label>{label}</Label>
 			<Input
-				type={"text"}
+				type={"number"}
 				defaultValue={input.value as string}
 				onChange={(event) => handleInputChange(event?.target.value)}
 				placeholder={placeholder}
@@ -57,4 +56,4 @@ const TextInput = ({ nodeId, input }: InputProps) => {
 	);
 };
 
-export default TextInput;
+export default NumberInput;

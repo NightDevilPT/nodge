@@ -32,7 +32,7 @@ const FlowEditor = () => {
 	const { resolvedTheme } = useTheme();
 	const reactFlowWrapper = useRef(null);
 	const { screenToFlowPosition } = useReactFlow();
-	const [edges, setEdges, onEdgesChange] = useNodesState([]);
+	const [edges, setEdges, onEdgesChange] = useNodesState<any>([]);
 	const [colorMode, setColorMode] = useState<ColorMode>("light");
 	const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
 
@@ -86,7 +86,9 @@ const FlowEditor = () => {
 			console.warn("Cannot connect a node to itself!");
 			return;
 		}
-		setEdges((eds) => addEdge(params, eds));
+		setEdges((eds) =>
+			addEdge({ ...params, id: `${source}:${target}` }, eds)
+		);
 	}, []);
 
 	// Ensure theme is applied after hydration
