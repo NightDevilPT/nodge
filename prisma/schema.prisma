@@ -60,13 +60,28 @@ model Credential {
 }
 
 model Workflow {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  nodes       Json
-  edges       Json
-  description String?  @default("")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  profile     Profile  @relation(name: "WorkflowToProfile", fields: [profileId], references: [id])
-  profileId   String   @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  description  String?  @default("")
+  nodes        Json
+  edges        Json
+  version      Int      @default(1)
+  isDraft      Boolean  @default(false)
+  isPublic     Boolean  @default(false)
+  sharedWith   String[] @db.ObjectId
+  tags         String[]
+  category     String?
+  status       Status   @default(PENDING)
+  lastRunAt    DateTime?
+  runCount     Int      @default(0)
+  triggerType  String?
+  cronSchedule String?
+  logs         Json?
+  outputs      Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile      Profile  @relation(name: "WorkflowToProfile", fields: [profileId], references: [id])
+  profileId    String   @db.ObjectId
 }
+
