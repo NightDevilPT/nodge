@@ -20,6 +20,12 @@ enum Status {
   FAILED
 }
 
+enum TriggerType {
+  MANUAL
+  SCHEDULED
+  WEBHOOK
+}
+
 model User {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
   username     String
@@ -65,19 +71,12 @@ model Workflow {
   description  String?  @default("")
   nodes        Json
   edges        Json
-  version      Int      @default(1)
   isDraft      Boolean  @default(false)
   isPublic     Boolean  @default(false)
   sharedWith   String[] @db.ObjectId
   tags         String[]
-  category     String?
-  status       Status   @default(PENDING)
-  lastRunAt    DateTime?
-  runCount     Int      @default(0)
-  triggerType  String?
+  triggerType  TriggerType? @default(MANUAL)
   cronSchedule String?
-  logs         Json?
-  outputs      Json?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
