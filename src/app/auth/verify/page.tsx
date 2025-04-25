@@ -45,7 +45,7 @@ export default function OTPVerificationPage() {
 			const response = await apiService.create<
 				{ message: string },
 				{ otp: string; email: string }
-			>({
+			>('',{
 				otp: data.otp,
 				email: data.email,
 			});

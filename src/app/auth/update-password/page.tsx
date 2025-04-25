@@ -45,7 +45,7 @@ export default function UpdatePasswordPage() {
 			await apiService.create<
 				{ message: string },
 				UpdatePasswordFormData
-			>(data);
+			>('',data);
 
 			toast({
 				title: "Success",

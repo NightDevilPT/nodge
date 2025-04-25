@@ -4,9 +4,9 @@ class ApiService {
 	constructor(private endpoint: string) {}
 
 	// === GET ALL ===
-	async getAll<T>(): Promise<T[]> {
-		const response = await axiosInstance.get(this.endpoint);
-		return response.data as T[];
+	async getAll<T>(url:string): Promise<T> {
+		const response = await axiosInstance.get(this.endpoint+ `/${url}`);
+		return response.data as T;
 	}
 
 	// === GET BY ID ===
@@ -16,8 +16,8 @@ class ApiService {
 	}
 
 	// === POST (CREATE) ===
-	async create<T, R>(data: R): Promise<T> {
-		const response = await axiosInstance.post(this.endpoint, data);
+	async create<T, R>(url:string,data: R): Promise<T> {
+		const response = await axiosInstance.post(this.endpoint+`/${url}`, data);
 		return response.data as T;
 	}
 

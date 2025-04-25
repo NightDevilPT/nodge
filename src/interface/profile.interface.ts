@@ -1,5 +1,5 @@
 import { Credential } from "./credential.interface";
-import { Workflow } from "./workflow.interface";
+import { WorkflowResponse } from "./workflow.interface";
 
 export interface Profile {
 	id: string;
@@ -10,7 +10,7 @@ export interface Profile {
 	createdAt: string; // ISO date string
 	updatedAt: string; // ISO date string
 	userId: string; // Relation with User table
-	workflows?: Workflow[];
+	workflows?: WorkflowResponse[];
 	credentials?: Credential[];
 }
 

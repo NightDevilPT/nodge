@@ -43,7 +43,7 @@ export default function ForgetPasswordPage() {
 			const response = await apiServiceForgetPassword.create<
 				{ message: string, status:number },
 				EmailFormData
-			>(data);
+			>('',data);
 
 			toast({
 				title: "Success",
@@ -69,7 +69,7 @@ export default function ForgetPasswordPage() {
 			const response = await apiServiceResendVerification.create<
 				{ message: string },
 				EmailFormData
-			>(data);
+			>('',data);
 
 			if(response.message==="Email is already verified."){
 				toast({

@@ -41,7 +41,7 @@ export default function SignupForm() {
 			const saveUser = await apiService.create<
 				{ message: string },
 				CreateUserRequest
-			>(newUser);
+			>('',newUser);
 			toast({
 				title: "Success",
 				description: saveUser.message,

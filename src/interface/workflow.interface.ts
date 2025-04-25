@@ -38,4 +38,5 @@ export interface WorkflowResponse {
 	createdAt: string;
 	updatedAt: string;
 	profileId: string;
+	actions?: React.ElementType;
 }

@@ -34,7 +34,7 @@ export default function LoginForm() {
 			const response = await apiService.create<
 				{ status: number; message: string },
 				LoginFormData
-			>(data);
+			>('',data);
 
 			toast({
 				title: "Login Successful",
