@@ -16,13 +16,19 @@ import { WorkflowResponse } from "@/interface/workflow.interface";
 import { CommonApiResponse } from "@/interface/common.interface";
 import NodgeTable, { ColumnConfig } from "@/components/shared/nodge-table";
 import NodgePaginationComponent from "@/components/shared/nodge-pagination";
+import NodgeGridCardLayout from "@/components/shared/nodge-grid-card";
+import { WorkflowCard } from "./_components/workflow-card";
+import { useView } from "@/components/providers/view-layout-provider";
+import { NodgeWorkflowCardSkeleton } from "@/components/shared/nodge-skeleton/card";
+import { NodgeWorkflowTableSkeleton } from "@/components/shared/nodge-skeleton/table";
 
 export default function Workflow() {
 	const { toast } = useToast();
 	const apiService = new ApiService("/workflow");
-	const itemsPerPage = 10;
 
-	const [view, setView] = useState<ViewEnum>(ViewEnum.TABLE);
+	// Use the context for view management
+	const { view, setView } = useView();
+	const [itemsPerPage, setItemsPerPage] = useState<number>(5); // Move this to state
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [data, setData] = useState<WorkflowResponse[]>([]);
 	const [totalPages, setTotalPages] = useState<number>(1);
@@ -40,21 +46,17 @@ export default function Workflow() {
 	const fetchWorkflows = async () => {
 		try {
 			setIsLoading(true);
-			const params = new URLSearchParams({
-				page: currentPage.toString(),
-				limit: itemsPerPage.toString(),
+			const params = {
+				page: currentPage,
+				limit: itemsPerPage,
 				sortBy,
 				sortOrder,
-			});
-
-			if (searchQuery) {
-				params.append("search", searchQuery);
-			}
+				...(searchQuery && { search: searchQuery }),
+			};
 
 			const response = await apiService.getAll<
 				CommonApiResponse<WorkflowResponse[]>
-			>("get-workflows");
-			console.log(response, "response");
+			>("get-workflows", params);
 			if (response?.data) {
 				setData(response.data);
 				setTotalPages(response.meta?.totalPages || 1);
@@ -80,12 +82,7 @@ export default function Workflow() {
 	// Fetch data when currentPage, searchQuery, or sorting changes
 	useEffect(() => {
 		fetchWorkflows();
-	}, [currentPage, searchQuery, sortBy, sortOrder]);
-
-	// Refresh data after workflow creation
-	const handleWorkflowCreated = () => {
-		fetchWorkflows();
-	};
+	}, [currentPage, searchQuery, sortBy, sortOrder, itemsPerPage]);
 
 	// Action Handlers
 	const handleView = (id: string) => {
@@ -126,6 +123,12 @@ export default function Workflow() {
 	// Format date string
 	const formatDate = (dateString: string) => {
 		return new Date(dateString).toLocaleString();
+	};
+
+	// Add this handler
+	const handleItemsPerPageChange = (newLimit: number) => {
+		setItemsPerPage(newLimit);
+		setCurrentPage(1); // Reset to first page when changing limit
 	};
 
 	// Column Definitions
@@ -291,17 +294,31 @@ export default function Workflow() {
 			</div>
 
 			{isLoading ? (
-				<div className="w-full h-64 flex items-center justify-center">
-					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-				</div>
+				view === ViewEnum.GRID ? (
+					<div className="grid grid-cols-2 gap-4">
+						{Array.from({ length: 4 }).map((_, index) => (
+							<NodgeWorkflowCardSkeleton key={index} />
+						))}
+					</div>
+				) : (
+					<NodgeWorkflowTableSkeleton />
+				)
 			) : (
 				<>
-					{/* {view === ViewEnum.GRID && (
-            <NodgeGridCard
-              data={data}
-              renderCard={(item) => <WorkflowCard {...item} />}
-            />
-          )} */}
+					{view === ViewEnum.GRID && (
+						<NodgeGridCardLayout
+							data={data}
+							className="grid grid-cols-2 max-lg:grid-cols-1 gap-5"
+							renderCard={(item) => (
+								<WorkflowCard
+									{...item}
+									onView={handleView}
+									onEdit={handleEdit}
+									onDelete={handleDelete}
+								/>
+							)}
+						/>
+					)}
 					{view === ViewEnum.TABLE && (
 						<div className="w-full h-auto">
 							<NodgeTable
@@ -316,13 +333,15 @@ export default function Workflow() {
 							/>
 						</div>
 					)}
-					<NodgePaginationComponent
-						currentPage={currentPage}
-						onPageChange={handlePageChange}
-						totalPage={totalPages}
-					/>
 				</>
 			)}
+			<NodgePaginationComponent
+				currentPage={currentPage}
+				onPageChange={handlePageChange}
+				totalPage={totalPages}
+				itemsPerPage={itemsPerPage}
+				onItemsPerPageChange={handleItemsPerPageChange}
+			/>
 		</main>
 	);
 }

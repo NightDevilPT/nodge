@@ -38,5 +38,10 @@ export interface WorkflowResponse {
 	createdAt: string;
 	updatedAt: string;
 	profileId: string;
+	user?: {
+		email: string;
+		firstName: string;
+		lastName: string;
+	};
 	actions?: React.ElementType;
 }

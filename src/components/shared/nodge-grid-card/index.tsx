@@ -2,12 +2,13 @@ import React from "react";
 
 export interface NodgeGridCardProps<T> {
 	data: T[];
+	className?:string;
 	renderCard: (item: T) => React.ReactNode;
 }
 
-const NodgeGridCard = <T,>({ data, renderCard }: NodgeGridCardProps<T>) => {
+const NodgeGridCardLayout = <T,>({ data, renderCard, className }: NodgeGridCardProps<T>) => {
 	return (
-		<div className="grid grid-cols-4 max-2xl:grid-cols-3 max-xl:grid-cols-2 max-md:grid-cols-1 gap-4">
+		<div className={`${className}`}>
 			{data.map((item, index) => (
 				<React.Fragment key={index}>{renderCard(item)}</React.Fragment>
 			))}
@@ -15,4 +16,4 @@ const NodgeGridCard = <T,>({ data, renderCard }: NodgeGridCardProps<T>) => {
 	);
 };
 
-export default NodgeGridCard;
+export default NodgeGridCardLayout;

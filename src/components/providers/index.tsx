@@ -3,11 +3,12 @@
 import React from "react";
 import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "../ui/toaster";
+import { ViewProvider } from "./view-layout-provider";
 
 const RootProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<ThemeProvider attribute="class" defaultTheme="light">
-			{children}
+			<ViewProvider>{children}</ViewProvider>
 			<Toaster />
 		</ThemeProvider>
 	);
