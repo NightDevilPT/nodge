@@ -1,22 +1,22 @@
 "use client";
-
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import { TbEdit, TbEye, TbPlus, TbTrash } from "react-icons/tb";
+import { TbEdit, TbEye, TbPhoto, TbPlus, TbTrash } from "react-icons/tb";
 
 import { commonStyle } from "@/lib/utils";
+import NodgeLayoutSwitch, {
+	ViewEnum,
+} from "@/components/shared/nodge-layout-switch";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import ApiService from "@/services/api.service";
 import { Button } from "@/components/ui/button";
-import NodgeLayoutSwitch, {
-	ViewEnum,
-} from "@/components/shared/nodge-layout-switch";
 import WorkflowCreateButton from "./_components/workflow-form";
 import { WorkflowResponse } from "@/interface/workflow.interface";
 import { CommonApiResponse } from "@/interface/common.interface";
+import NodgeGridCardLayout from "@/components/shared/nodge-grid-card";
 import NodgeTable, { ColumnConfig } from "@/components/shared/nodge-table";
 import NodgePaginationComponent from "@/components/shared/nodge-pagination";
-import NodgeGridCardLayout from "@/components/shared/nodge-grid-card";
 import { WorkflowCard } from "./_components/workflow-card";
 import { useView } from "@/components/providers/view-layout-provider";
 import { NodgeWorkflowCardSkeleton } from "@/components/shared/nodge-skeleton/card";
@@ -58,6 +58,7 @@ export default function Workflow() {
 				CommonApiResponse<WorkflowResponse[]>
 			>("get-workflows", params);
 			if (response?.data) {
+				console.log("Fetched workflows:", response.data);
 				setData(response.data);
 				setTotalPages(response.meta?.totalPages || 1);
 			}
@@ -94,6 +95,7 @@ export default function Workflow() {
 	// Update the handleEdit function in your Workflow component:
 	const handleEdit = (id: string) => {
 		const workflowToEdit = data.find((workflow) => workflow.id === id);
+		console.log("Editing workflow:", workflowToEdit);
 		if (workflowToEdit) {
 			setEditingWorkflow(workflowToEdit);
 			setOpen(true);
@@ -133,6 +135,28 @@ export default function Workflow() {
 
 	// Column Definitions
 	const columns: ColumnConfig<WorkflowResponse>[] = [
+		{
+			field: "banner",
+			headerName: "Banner",
+			sortable: false,
+			width: "10%",
+			renderCell: (item) => (
+				<div className="h-16 relative rounded-md overflow-hidden border">
+					{item.banner ? (
+						<Image
+							fill
+							src={item.banner}
+							alt="Workflow banner"
+							className="w-full h-full aspect-video"
+						/>
+					) : (
+						<div className="w-full h-full flex items-center justify-center">
+							<TbPhoto className="h-6 w-6 text-accent" />
+						</div>
+					)}
+				</div>
+			),
+		},
 		{ field: "name", headerName: "Name", sortable: true, width: "20%" },
 		{
 			field: "description",
@@ -230,8 +254,10 @@ export default function Workflow() {
 			field: "updatedAt",
 			headerName: "Last Updated",
 			sortable: true,
-			width: "15%",
-			renderCell: (item) => <span>{formatDate(item.updatedAt)}</span>,
+			width: "20%",
+			renderCell: (item) => (
+				<span className="w-full">{formatDate(item.updatedAt)}</span>
+			),
 		},
 		{
 			field: "actions",
@@ -308,7 +334,7 @@ export default function Workflow() {
 					{view === ViewEnum.GRID && (
 						<NodgeGridCardLayout
 							data={data}
-							className="grid grid-cols-2 max-lg:grid-cols-1 gap-5"
+							className="grid grid-cols-3 max-lg:grid-cols-1 gap-5"
 							renderCard={(item) => (
 								<WorkflowCard
 									{...item}

@@ -17,7 +17,7 @@ const updateProfileHandler = async (
 	try {
 		const userId = (request as any).userId; // Authenticated user ID from middleware
 		const body: UpdateProfileRequest = await request.json();
-		const { firstName, lastName, phoneNumber, avatar } = body;
+		const { firstName, lastName, phoneNumber, avatar, gender } = body;
 
 		// Check if the profile exists
 		const existingProfile = await prisma.profile.findUnique({
@@ -43,6 +43,7 @@ const updateProfileHandler = async (
 				lastName: lastName ?? existingProfile.lastName,
 				phoneNumber: phoneNumber ?? existingProfile.phoneNumber,
 				avatar: avatar ?? existingProfile.avatar,
+				gender: gender ?? existingProfile?.gender as any
 			},
 		});
 

@@ -22,6 +22,7 @@ const createWorkflowHandler = async (
 		const body: CreateWorkflowRequest = await request.json();
 		const {
 			name,
+			banner = '',
 			description,
 			nodes,
 			edges,
@@ -66,6 +67,7 @@ const createWorkflowHandler = async (
 		const createdWorkflow = await prisma.workflow.create({
 			data: {
 				name,
+				banner: banner || null,
 				description: description || "",
 				nodes: nodes || [],
 				edges: edges || [],
@@ -81,6 +83,7 @@ const createWorkflowHandler = async (
 
 		const workflowResponse: WorkflowResponse = {
 			id: createdWorkflow.id,
+			banner: createdWorkflow.banner,
 			name: createdWorkflow.name,
 			description: createdWorkflow.description || "",
 			nodes: createdWorkflow.nodes,

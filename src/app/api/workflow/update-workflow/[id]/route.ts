@@ -31,6 +31,7 @@ const updateWorkflowHandler = async (
       tags,
       triggerType,
       cronSchedule,
+      banner
     } = body;
 	console.log(body, "body");
 
@@ -88,6 +89,7 @@ const updateWorkflowHandler = async (
       data: {
         name: name || existingWorkflow.name,
         description: description || existingWorkflow.description,
+        banner: banner || existingWorkflow.banner,
         nodes: nodes || existingWorkflow.nodes,
         edges: edges || existingWorkflow.edges,
         isDraft: isDraft,
@@ -101,6 +103,7 @@ const updateWorkflowHandler = async (
 
     const workflowResponse: WorkflowResponse = {
       id: updatedWorkflow.id,
+      banner: updatedWorkflow.banner,
       name: updatedWorkflow.name,
       description: updatedWorkflow.description || "",
       nodes: updatedWorkflow.nodes,

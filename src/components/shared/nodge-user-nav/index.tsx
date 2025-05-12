@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function NodgeUserNav() {
+	const route = useRouter();
 	const handleLogout = () => {
 		console.log("User logged out");
 	};
@@ -20,22 +24,12 @@ export function NodgeUserNav() {
 		{
 			label: "Profile",
 			shortcut: "⇧⌘P",
-			onClick: () => console.log("Profile clicked"),
+			onClick: () => route.push("/settings?tab=Profile"),
 		},
 		{
-			label: "Billing",
-			shortcut: "⌘B",
-			onClick: () => console.log("Billing clicked"),
-		},
-		{
-			label: "Settings",
+			label: "Appearance",
 			shortcut: "⌘S",
-			onClick: () => console.log("Settings clicked"),
-		},
-		{
-			label: "New Team",
-			shortcut: null,
-			onClick: () => console.log("New Team clicked"),
+			onClick: () => route.push("/settings?tab=Appearance"),
 		},
 	];
 

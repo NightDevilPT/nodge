@@ -109,6 +109,7 @@ const getWorkflowsHandler = async (
 			where: filterConditions,
 			select: {
 				id: true,
+				banner: true,
 				name: true,
 				description: true,
 				nodes: true,
@@ -142,6 +143,7 @@ const getWorkflowsHandler = async (
 		const workflowsResponse: WorkflowResponse[] = workflows.map(
 			(workflow) => ({
 				id: workflow.id,
+				banner: workflow.banner,
 				name: workflow.name,
 				description: workflow.description || "",
 				nodes: workflow.nodes || [],

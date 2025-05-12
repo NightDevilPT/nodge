@@ -46,8 +46,8 @@ class ApiService {
 	}
 
 	// === DELETE ===
-	async get(endPoint:string): Promise<any> {
-		return await axiosInstance.get(this.endpoint + `/${endPoint}`); 
+	async get<T>(endPoint:string): Promise<T> {
+		return (await axiosInstance.get(this.endpoint + `/${endPoint}`)).data as T; 
 	}
 }
 

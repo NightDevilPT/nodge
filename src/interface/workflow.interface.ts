@@ -11,6 +11,7 @@ export interface GetWorkflowsQuery {
 
 // Define interfaces for the workflow
 export interface CreateWorkflowRequest {
+	banner?: string;
 	name: string;
 	description?: string;
 	nodes: any;
@@ -25,6 +26,7 @@ export interface CreateWorkflowRequest {
 
 export interface WorkflowResponse {
 	id: string;
+	banner: string | null;
 	name: string;
 	description: string;
 	nodes: any;

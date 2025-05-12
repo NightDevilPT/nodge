@@ -6,12 +6,14 @@ export interface Profile {
 	firstName: string;
 	lastName: string;
 	phoneNumber?: string;
+	gender?: string;
 	avatar?: string;
 	createdAt: string; // ISO date string
 	updatedAt: string; // ISO date string
 	userId: string; // Relation with User table
 	workflows?: WorkflowResponse[];
 	credentials?: Credential[];
+	verified?: boolean;
 }
 
 export interface CreateProfileRequest {
@@ -27,6 +29,7 @@ export interface UpdateProfileRequest {
 	lastName?: string;
 	phoneNumber?: string;
 	avatar?: string;
+	gender?: string;
 }
 
 export interface DeleteProfileRequest {

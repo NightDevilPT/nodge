@@ -24,6 +24,22 @@ const getProfileHandler = async (
 		// Retrieve the profile associated with the user ID
 		const profile = await prisma.profile.findUnique({
 			where: { userId },
+			select: {
+				id: true,
+				firstName: true,
+				lastName: true,
+				phoneNumber: true,
+				avatar: true,
+				createdAt: true,
+				updatedAt: true,
+				userId: true,
+				user: {
+					select: {
+						id: true,
+						isVerified: true,
+					}
+				}
+			}
 		});
 
 		if (!profile) {
@@ -47,6 +63,7 @@ const getProfileHandler = async (
 			createdAt: profile.createdAt.toISOString(),
 			updatedAt: profile.updatedAt.toISOString(),
 			userId: profile.userId,
+			verified: profile.user.isVerified,
 		};
 
 		const response: CommonApiResponse<ProfileResponse["profile"]> = {

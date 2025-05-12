@@ -1,4 +1,12 @@
-import { TbEdit, TbEye, TbTrash, TbDotsVertical } from "react-icons/tb";
+import Link from "next/link";
+import Image from "next/image";
+import {
+	TbEdit,
+	TbEye,
+	TbTrash,
+	TbDotsVertical,
+	TbPhoto,
+} from "react-icons/tb";
 import {
 	Card,
 	CardContent,
@@ -6,19 +14,17 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { commonStyle } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { WorkflowResponse } from "@/interface/workflow.interface";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { WorkflowResponse } from "@/interface/workflow.interface";
 
 interface WorkflowCardProps extends WorkflowResponse {
 	onView?: (id: string) => void;
@@ -29,6 +35,7 @@ interface WorkflowCardProps extends WorkflowResponse {
 export const WorkflowCard = ({
 	id,
 	name,
+	banner,
 	description,
 	tags,
 	triggerType,
@@ -47,11 +54,20 @@ export const WorkflowCard = ({
 	return (
 		<Card className="hover:shadow-lg transition-shadow duration-200 p-0">
 			<CardHeader className="px-4 py-0 pt-3 pb-1">
-				<div className="flex justify-between items-start">
-					<CardTitle className="text-lg line-clamp-1 p-0">
-						<Link href={"#"}>{name}</Link>
-					</CardTitle>
-					<div className="flex items-center gap-2">
+				<div className="flex w-full h-auto aspect-video relative justify-between items-start">
+					{banner ? (
+						<Image
+							fill
+							src={banner || ""}
+							alt="lll"
+							className="rounded-md border-[1px]"
+						/>
+					) : (
+						<div className="w-full h-auto aspect-video flex justify-center items-center rounded-md border-[1px]">
+							<TbPhoto className="w-10 h-10 text-accent" />
+						</div>
+					)}
+					<div className="flex absolute right-1 top-1 items-center gap-2">
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button
@@ -83,8 +99,11 @@ export const WorkflowCard = ({
 					</div>
 				</div>
 			</CardHeader>
-			<Separator />
+			<Separator className="mt-2" />
 			<CardContent className="p-0 px-4 py-2">
+				<CardTitle className="text-lg line-clamp-1 p-0">
+					<Link href={"#"}>{name}</Link>
+				</CardTitle>
 				<div className="flex justify-end items-center gap-2">
 					<Badge
 						variant={isDraft ? "secondary" : "default"}

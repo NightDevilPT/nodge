@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { TbX } from "react-icons/tb";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import React, { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,29 +27,28 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import ApiService from "@/services/api.service";
 import {
 	CreateWorkflowRequest,
 	WorkflowResponse,
 } from "@/interface/workflow.interface";
+import ApiService from "@/services/api.service";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { BannerUploader } from "@/components/shared/banner-uploader";
 
-// Define the TriggerType enum to match the Prisma model
 const TriggerType = {
 	MANUAL: "MANUAL",
 	SCHEDULED: "SCHEDULED",
 	WEBHOOK: "WEBHOOK",
 } as const;
 
-// Updated workflow schema to match the Prisma model
 const workflowSchema = z.object({
 	name: z.string().min(3, { message: "Name must be at least 3 characters" }),
 	description: z.string().optional().default(""),
+	banner: z.string().optional().default(""),
 	tags: z.array(z.string()).default([]),
 	sharedWith: z.array(z.string()).default([]),
 	triggerType: z.enum(["MANUAL", "SCHEDULED", "WEBHOOK"]).default("MANUAL"),
@@ -92,10 +92,8 @@ export default function WorkflowForm({
 	open,
 	setOpen,
 }: WorkflowFormProps) {
-  console.log(workflow, "workflow");
 	const apiService = new ApiService("/workflow");
 	const { toast } = useToast();
-	// const [open, setOpen] = useState(false);
 	const [tagInput, setTagInput] = useState("");
 	const [tagsList, setTagsList] = useState<string[]>([]);
 	const [showScheduler, setShowScheduler] = useState(false);
@@ -107,6 +105,8 @@ export default function WorkflowForm({
 	const [cronUnit, setCronUnit] = useState<
 		"minutes" | "hours" | "days" | "weeks" | "months"
 	>("hours");
+	const [avatarPreview, setAvatarPreview] = useState("");
+	const [isUploading, setIsUploading] = useState(false);
 
 	const {
 		register,
@@ -114,12 +114,13 @@ export default function WorkflowForm({
 		reset,
 		setValue,
 		watch,
-		formState: { errors, isSubmitting },
+		formState: { errors, isSubmitting, isDirty },
 	} = useForm<WorkflowFormData>({
 		resolver: zodResolver(workflowSchema),
 		defaultValues: {
 			name: "",
 			description: "",
+			banner: "",
 			triggerType: "MANUAL",
 			isDraft: false,
 			isPublic: false,
@@ -132,24 +133,22 @@ export default function WorkflowForm({
 
 	const triggerType = watch("triggerType");
 
-	// Initialize form with workflow data when in edit mode
 	useEffect(() => {
 		if (workflow) {
 			setValue("name", workflow.name);
 			setValue("description", workflow.description || "");
+			setValue("banner", workflow.banner || "");
 			setValue("triggerType", workflow.triggerType || ("MANUAL" as any));
 			setValue("isDraft", workflow.isDraft);
 			setValue("isPublic", workflow.isPublic);
 			setValue("nodes", workflow.nodes || []);
 			setValue("edges", workflow.edges || []);
 
-			// Set tags
 			if (workflow.tags) {
 				setTagsList(workflow.tags);
 				setValue("tags", workflow.tags);
 			}
 
-			// Set shared users (mock implementation - in real app you'd fetch actual users)
 			if (workflow.sharedWith) {
 				const users = mockUsers.filter((user) =>
 					workflow.sharedWith?.includes(user.id)
@@ -158,7 +157,6 @@ export default function WorkflowForm({
 				setValue("sharedWith", workflow.sharedWith);
 			}
 
-			// Parse cron schedule if exists
 			if (workflow.triggerType === "SCHEDULED" && workflow.cronSchedule) {
 				const cronParts = workflow.cronSchedule.split(" ");
 				if (cronParts[0].startsWith("*/")) {
@@ -175,6 +173,10 @@ export default function WorkflowForm({
 						setCronUnit("weeks");
 					}
 				}
+			}
+
+			if (workflow.banner) {
+				setAvatarPreview(workflow.banner);
 			}
 		}
 	}, [workflow, mode, setValue]);
@@ -274,29 +276,28 @@ export default function WorkflowForm({
 
 			const workflowData: CreateWorkflowRequest = {
 				...data,
+				banner: avatarPreview || data.banner || "",
 				cronSchedule: cronExpression,
 				nodes: data.nodes || [],
 				edges: data.edges || [],
-        tags: data.tags || [],
-        sharedWith: data.sharedWith || [],
-        triggerType: data.triggerType,
-        isDraft: data.isDraft,
-        isPublic: data.isPublic,
+				tags: data.tags || [],
+				sharedWith: data.sharedWith || [],
+				triggerType: data.triggerType,
+				isDraft: data.isDraft,
+				isPublic: data.isPublic,
 			};
-
-      console.log(workflowData, "workflowData");
 
 			let response;
 			if (workflow) {
-				response = await apiService.update<WorkflowResponse, CreateWorkflowRequest>(
-					`update-workflow/${workflow.id}`,
-					workflowData
-				);
+				response = await apiService.update<
+					WorkflowResponse,
+					CreateWorkflowRequest
+				>(`update-workflow/${workflow.id}`, workflowData);
 			} else {
-				response = await apiService.create<WorkflowResponse, CreateWorkflowRequest>(
-          'create',
-					workflowData
-				);
+				response = await apiService.create<
+					WorkflowResponse,
+					CreateWorkflowRequest
+				>("create", workflowData);
 			}
 
 			toast({
@@ -311,6 +312,7 @@ export default function WorkflowForm({
 			reset();
 			setTagsList([]);
 			setSelectedUsers([]);
+			setAvatarPreview("");
 
 			if (onSuccess) {
 				onSuccess();
@@ -331,29 +333,6 @@ export default function WorkflowForm({
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			{/* {mode === "create" ? (
-        <DialogTrigger asChild>
-          <Button
-            className={`${commonStyle.gradientBg} flex justify-center items-center`}
-            variant="default"
-            size={"icon"}
-          >
-            <TbPlus />
-          </Button>
-        </DialogTrigger>
-      ) : (
-        <DialogTrigger asChild>
-          {children || (
-            <Button
-              className={`w-8 h-8 p-1 ${commonStyle.gradientBg}`}
-              variant="default"
-              onClick={() => setOpen(true)}
-            >
-              <TbEdit />
-            </Button>
-          )}
-        </DialogTrigger>
-      )} */}
 			<DialogContent className="px-1 py-8">
 				<ScrollArea className="sm:max-w-[600px] max-h-[80vh] px-5">
 					<DialogHeader>
@@ -373,6 +352,21 @@ export default function WorkflowForm({
 						onSubmit={handleSubmit(onSubmit)}
 						className="space-y-4 py-4"
 					>
+						{/* Avatar Upload Section */}
+						<BannerUploader
+							title="Workflow Avatar"
+							value={avatarPreview}
+							onChange={(value) => {
+								setAvatarPreview(value);
+								setValue("banner", value, {
+									shouldDirty: true,
+								});
+							}}
+							isUploading={isUploading}
+							setIsUploading={setIsUploading}
+							aspectRatio={"video"}
+						/>
+
 						{/* Name Field */}
 						<div className="space-y-2">
 							<Label htmlFor="name">
@@ -606,14 +600,14 @@ export default function WorkflowForm({
 										</SelectContent>
 									</Select>
 								</div>
-								<div className="text-sm text-gray-500 mt-1">
+								<div className="text-sm text-muted-foreground mt-1">
 									<p>
 										Will run every {cronInterval || 1}{" "}
 										{cronUnit || "hours"}
 									</p>
 									<p className="text-xs mt-1">
 										Cron expression:{" "}
-										<code className="px-1 rounded">
+										<code className="px-1 rounded bg-accent">
 											{getCronExpression()}
 										</code>
 									</p>
@@ -629,7 +623,7 @@ export default function WorkflowForm({
 										<h4 className="font-medium">
 											Save as Draft
 										</h4>
-										<p className="text-sm text-gray-500">
+										<p className="text-sm text-muted-foreground">
 											Save this workflow as a draft for
 											later editing
 										</p>
@@ -640,7 +634,9 @@ export default function WorkflowForm({
 											workflow?.isDraft || false
 										}
 										onCheckedChange={(checked) =>
-											setValue("isDraft", checked)
+											setValue("isDraft", checked, {
+												shouldDirty: true,
+											})
 										}
 									/>
 								</div>
@@ -650,7 +646,7 @@ export default function WorkflowForm({
 										<h4 className="font-medium">
 											Make Public
 										</h4>
-										<p className="text-sm text-gray-500">
+										<p className="text-sm text-muted-foreground">
 											Allow this workflow to be viewed by
 											other users
 										</p>
@@ -661,14 +657,16 @@ export default function WorkflowForm({
 											workflow?.isPublic || false
 										}
 										onCheckedChange={(checked) =>
-											setValue("isPublic", checked)
+											setValue("isPublic", checked, {
+												shouldDirty: true,
+											})
 										}
 									/>
 								</div>
 							</CardContent>
 						</Card>
 
-						<DialogFooter>
+						<DialogFooter className="pt-4">
 							<Button
 								type="button"
 								variant="outline"
@@ -676,23 +674,29 @@ export default function WorkflowForm({
 									reset();
 									setTagsList([]);
 									setSelectedUsers([]);
+									setAvatarPreview(workflow?.banner || "");
 									setOpen(false);
 								}}
+								disabled={isSubmitting || isUploading}
 							>
 								Cancel
 							</Button>
 							<Button
 								type="submit"
-								disabled={isSubmitting}
+								disabled={
+									isSubmitting ||
+									isUploading ||
+									(!isDirty && mode === "edit")
+								}
 								className={`${commonStyle.gradientBg}`}
 							>
-								{isSubmitting
-									? workflow
-										? "Updating..."
-										: "Creating..."
-									: workflow
-									? "Update Workflow"
-									: "Create Workflow"}
+								{isSubmitting || isUploading ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : mode === "edit" ? (
+									"Update Workflow"
+								) : (
+									"Create Workflow"
+								)}
 							</Button>
 						</DialogFooter>
 					</form>

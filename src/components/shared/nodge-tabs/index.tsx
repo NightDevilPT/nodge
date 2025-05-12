@@ -14,16 +14,27 @@ interface NodgeTabsProps {
 
 const NodgeTabs: React.FC<NodgeTabsProps> = ({ tabs, defaultValue }) => {
 	return (
-		<Tabs defaultValue={defaultValue} className="w-full flex justify-center items-center flex-col gap-0">
-			<TabsList className="h-auto w-auto">
+		<Tabs
+			defaultValue={defaultValue || tabs[0].label}
+			className="w-full flex justify-start items-start flex-col gap-0"
+		>
+			<TabsList className="h-auto w-auto px-2 py-1.5 gap-4 bg-transparent border-[1px]">
 				{tabs.map((tab, index) => (
-					<TabsTrigger key={index} value={tab.label}>
+					<TabsTrigger
+						key={index}
+						value={tab.label}
+						className="data-[state=active]:bg-primary data-[state=active]:text-gray-800"
+					>
 						{tab.trigger}
 					</TabsTrigger>
 				))}
 			</TabsList>
 			{tabs.map((tab, index) => (
-				<TabsContent className="w-full" key={index} value={tab.label}>
+				<TabsContent
+					className="w-full mt-0"
+					key={index}
+					value={tab.label}
+				>
 					{tab.content}
 				</TabsContent>
 			))}
