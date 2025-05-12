@@ -170,7 +170,7 @@ export default function ProfileSetting() {
 								<BannerUploader
 									title="Profile Avatar"
 									value={avatarPreview}
-									className="max-w-[50%] max-lg:w-full"
+									className="max-w-[50%] max-xl:max-w-[80%] max-lg:max-w-full"
 									onChange={(value) => {
 										setAvatarPreview(value);
 										setValue("avatar", value, {
@@ -259,10 +259,13 @@ export default function ProfileSetting() {
 										<span className="text-red-500">*</span>
 									</Label>
 									<Select
-										{...form.register("gender")}
 										onValueChange={(
 											value: "MALE" | "FEMALE" | "OTHER"
-										) => setValue("gender", value)}
+										) =>
+											setValue("gender", value, {
+												shouldDirty: true,
+											})
+										}
 										defaultValue={profile?.gender || "MALE"}
 									>
 										<SelectTrigger>
