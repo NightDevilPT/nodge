@@ -17,8 +17,8 @@ const NodgeSidebar = () => {
 						href={route.link}
 						className={`flex items-center px-3 py-2 space-x-2 rounded-md ${
 							isActive
-								? "bg-gradient-to-tr from-primary to-green-400 text-white dark:text-secondary"
-								: "bg-transparent text-foreground dark:text-white hover:bg-gray-200 hover:dark:bg-secondary"
+								? `bg-gradient-to-tr from-primary to-primary-300 text-foreground`
+								: "bg-transparent text-foreground"
 						}`}
 					>
 						{isActive ? (

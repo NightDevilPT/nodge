@@ -7,7 +7,7 @@ import { ViewProvider } from "./view-layout-provider";
 
 const RootProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<ThemeProvider attribute="class" defaultTheme="light">
+		<ThemeProvider>
 			<ViewProvider>{children}</ViewProvider>
 			<Toaster />
 		</ThemeProvider>

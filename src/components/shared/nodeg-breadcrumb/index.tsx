@@ -25,13 +25,13 @@ const NodgeBreadcrumb = () => {
         <BreadcrumbItem>
           {isActive ? (
             <BreadcrumbPage
-              className={`bg-gradient-to-tr from-primary to-green-400 bg-clip-text text-transparent capitalize`}
+              className={`bg-gradient-to-tr from-primary to-primary-300 bg-clip-text text-transparent capitalize`}
             >
               {segment.replace(/-/g, " ")}
             </BreadcrumbPage>
           ) : (
             <Link href={path}>
-              <BreadcrumbPage className="text-foreground hover:text-primary capitalize">
+              <BreadcrumbPage className="text-foreground hover:text-primary-300 capitalize">
                 {segment.replace(/-/g, " ")}
               </BreadcrumbPage>
             </Link>
@@ -51,8 +51,8 @@ const NodgeBreadcrumb = () => {
             <BreadcrumbPage
               className={`${
                 pathArray.length === 0
-                  ? "bg-gradient-to-tr from-primary to-green-400 bg-clip-text text-transparent"
-                  : "text-foreground hover:text-primary"
+                  ? "bg-gradient-to-tr from-primary to-primary-300 bg-clip-text text-transparent"
+                  : "text-foreground hover:text-primary-300"
               }`}
             >
               Home

@@ -11,8 +11,8 @@ export const getUniqueId = () => {
 };
 
 export const commonStyle = {
-	gradientText: `bg-gradient-to-tr from-primary to-green-300 bg-clip-text text-transparent`,
-	gradientBg: `bg-gradient-to-tr rounded-md from-primary to-green-400`,
+	gradientText: `bg-gradient-to-tr from-primary to-primary-300 bg-clip-text text-transparent`,
+	gradientBg: `bg-gradient-to-tr rounded-md from-primary to-primary-300`,
 };
 
 export const getMinMaxDates = (data: NodgeChartDataPoint[]) => {
