@@ -28,7 +28,6 @@ import { BannerUploader } from "@/components/shared/banner-uploader";
 import ProfileSettingSkeleton from "@/components/shared/nodge-skeleton/profile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// Define form schema
 const profileFormSchema = z.object({
 	firstName: z.string().min(2, {
 		message: "First name must be at least 2 characters.",
@@ -46,12 +45,11 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 export default function ProfileSetting() {
 	const apiService = new ApiService("/profile");
 	const [isLoading, setIsLoading] = useState(true);
-	const [profile, setProfile] = useState<Profile | null>(null);
+	const [profileExists, setProfileExists] = useState(false);
 	const [avatarPreview, setAvatarPreview] = useState("");
 	const [isUploading, setIsUploading] = useState(false);
 	const router = useRouter();
 
-	// Create the form with proper initialization
 	const form = useForm<ProfileFormValues>({
 		resolver: zodResolver(profileFormSchema),
 		defaultValues: {
@@ -65,15 +63,15 @@ export default function ProfileSetting() {
 
 	const { handleSubmit, reset, register, setValue, formState } = form;
 
-	// Fetch profile data
 	useEffect(() => {
 		const fetchProfile = async () => {
 			try {
 				const response = await apiService.get<
 					CommonApiResponse<Profile>
 				>("/get-profile");
+
 				if (response.data) {
-					setProfile(response.data);
+					setProfileExists(true);
 					reset({
 						firstName: response.data.firstName,
 						lastName: response.data.lastName,
@@ -89,12 +87,18 @@ export default function ProfileSetting() {
 					}
 				}
 			} catch (error: any) {
-				console.error("Error fetching profile:", error);
-				toast({
-					title: "Error",
-					description: error.message || "Failed to load profile data",
-					variant: "destructive",
-				});
+				// If profile doesn't exist, we'll create it
+				if (error.response?.status === 404) {
+					setProfileExists(false);
+				} else {
+					console.error("Error fetching profile:", error);
+					toast({
+						title: "Error",
+						description:
+							error.message || "Failed to load profile data",
+						variant: "destructive",
+					});
+				}
 			} finally {
 				setIsLoading(false);
 			}
@@ -105,30 +109,41 @@ export default function ProfileSetting() {
 
 	const onSubmit = async (data: ProfileFormValues) => {
 		try {
-			const response = await apiService.update<any, any>(
-				"/update-profile",
-				data
-			);
+			let response;
+
+			if (profileExists) {
+				// Update existing profile
+				response = await apiService.update<
+					CommonApiResponse<Profile>,
+					ProfileFormValues
+				>("/update-profile", data);
+			} else {
+				// Create new profile
+				response = await apiService.create<
+					CommonApiResponse<Profile>,
+					ProfileFormValues
+				>("/create", data);
+				setProfileExists(true);
+			}
 
 			toast({
 				title: "Success",
-				description: response.message || "Profile updated successfully",
-				variant: "default",
+				description: response.message || "Profile saved successfully",
+				variant: "success",
 			});
 
-			// Update local state with new data
-			setProfile(response.data);
-			if (response.data.avatar) {
-				setAvatarPreview(response.data.avatar);
+			// Update avatar preview if changed
+			if (data.avatar) {
+				setAvatarPreview(data.avatar);
 			}
 
 			// Refresh the page to reflect changes
 			router.refresh();
 		} catch (error: any) {
-			console.error("Error updating profile:", error);
+			console.error("Error saving profile:", error);
 			toast({
 				title: "Error",
-				description: error.message || "Failed to update profile",
+				description: error.message || "Failed to save profile",
 				variant: "destructive",
 			});
 		}
@@ -149,16 +164,14 @@ export default function ProfileSetting() {
 					<CardHeader>
 						<CardTitle className="flex justify-between items-center">
 							Profile Settings
-							<span className="flex justify-center items-center gap-2">
-								<BsPatchCheckFill
-									className={`w-4 h-4 ${
-										profile?.verified
-											? "text-blue-500"
-											: "text-yellow-500"
-									}`}
-								/>
-								{profile?.verified ? "Verified" : "Pending"}
-							</span>
+							{profileExists && (
+								<span className="flex justify-center items-center gap-2">
+									<BsPatchCheckFill
+										className={`w-4 h-4 text-blue-500`}
+									/>
+									Profile Created
+								</span>
+							)}
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
@@ -196,14 +209,11 @@ export default function ProfileSetting() {
 									<Input
 										id="firstName"
 										placeholder="John"
-										{...form.register("firstName")}
+										{...register("firstName")}
 									/>
-									{form.formState.errors.firstName && (
+									{formState.errors.firstName && (
 										<p className="text-sm text-red-500">
-											{
-												form.formState.errors.firstName
-													.message
-											}
+											{formState.errors.firstName.message}
 										</p>
 									)}
 								</div>
@@ -218,14 +228,11 @@ export default function ProfileSetting() {
 									<Input
 										id="lastName"
 										placeholder="Doe"
-										{...form.register("lastName")}
+										{...register("lastName")}
 									/>
-									{form.formState.errors.lastName && (
+									{formState.errors.lastName && (
 										<p className="text-sm text-red-500">
-											{
-												form.formState.errors.lastName
-													.message
-											}
+											{formState.errors.lastName.message}
 										</p>
 									)}
 								</div>
@@ -240,19 +247,18 @@ export default function ProfileSetting() {
 									<Input
 										id="phoneNumber"
 										placeholder="+1 (555) 123-4567"
-										{...form.register("phoneNumber")}
+										{...register("phoneNumber")}
 									/>
-									{form.formState.errors.phoneNumber && (
+									{formState.errors.phoneNumber && (
 										<p className="text-sm text-red-500">
 											{
-												form.formState.errors
-													.phoneNumber.message
+												formState.errors.phoneNumber
+													.message
 											}
 										</p>
 									)}
 								</div>
 
-								{/* Trigger Type Field */}
 								<div className="space-y-2">
 									<Label htmlFor="gender">
 										Gender{" "}
@@ -266,10 +272,12 @@ export default function ProfileSetting() {
 												shouldDirty: true,
 											})
 										}
-										defaultValue={profile?.gender || "MALE"}
+										defaultValue={
+											form.getValues("gender") || "MALE"
+										}
 									>
 										<SelectTrigger>
-											<SelectValue placeholder="Select trigger type" />
+											<SelectValue placeholder="Select gender" />
 										</SelectTrigger>
 										<SelectContent>
 											<SelectItem value="MALE">
@@ -288,7 +296,7 @@ export default function ProfileSetting() {
 								<input
 									type="hidden"
 									id="avatar"
-									{...form.register("avatar")}
+									{...register("avatar")}
 								/>
 							</div>
 
@@ -310,8 +318,10 @@ export default function ProfileSetting() {
 								>
 									{formState.isSubmitting ? (
 										<Loader2 className="h-4 w-4 animate-spin" />
+									) : profileExists ? (
+										"Update Profile"
 									) : (
-										"Save Changes"
+										"Create Profile"
 									)}
 								</Button>
 							</div>

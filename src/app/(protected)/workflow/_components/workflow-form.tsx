@@ -93,6 +93,7 @@ export default function WorkflowForm({
 	setOpen,
 }: WorkflowFormProps) {
 	const apiService = new ApiService("/workflow");
+	const userApiService = new ApiService("/user");
 	const { toast } = useToast();
 	const [tagInput, setTagInput] = useState("");
 	const [tagsList, setTagsList] = useState<string[]>([]);
@@ -185,23 +186,34 @@ export default function WorkflowForm({
 		setShowScheduler(triggerType === "SCHEDULED");
 	}, [triggerType]);
 
+	// Replace the current useEffect for user search with this:
 	useEffect(() => {
-		if (userSearchQuery.trim().length > 0) {
-			const results = mockUsers.filter(
-				(user) =>
-					user.name
-						.toLowerCase()
-						.includes(userSearchQuery.toLowerCase()) ||
-					user.email
-						.toLowerCase()
-						.includes(userSearchQuery.toLowerCase())
-			);
-			setSearchResults(results);
-			setShowUserResults(true);
-		} else {
-			setSearchResults([]);
-			setShowUserResults(false);
-		}
+		const fetchUsers = async () => {
+			if (userSearchQuery.trim().length > 0) {
+				try {
+					const results = await userApiService.getAll<User[]>(
+						"get-users",
+						{
+							query: userSearchQuery,
+						}
+					);
+					setSearchResults(results);
+					setShowUserResults(results.length > 0);
+				} catch (error) {
+					console.error("Error fetching users:", error);
+					setSearchResults([]);
+					setShowUserResults(false);
+				}
+			} else {
+				setSearchResults([]);
+				setShowUserResults(false);
+			}
+		};
+
+		// Add debounce to prevent too many API calls
+		const debounceTimer = setTimeout(fetchUsers, 300);
+
+		return () => clearTimeout(debounceTimer);
 	}, [userSearchQuery]);
 
 	const addTag = () => {

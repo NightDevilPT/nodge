@@ -9,7 +9,7 @@ const NodgeLogo = () => {
 			>
 				<TbDragDrop className={`w-full h-full text-white`} />
 			</div>
-			<h2 className={`flex-1 text-2xl font-[800] text-foreground`}>
+			<h2 className={`flex-1 text-2xl font-[800] text-prima-foreground`}>
 				<span className={`bg-gradient-to-tr from-primary to-primary-300 bg-clip-text text-transparent`}>Node</span>Flow
 			</h2>
 		</div>

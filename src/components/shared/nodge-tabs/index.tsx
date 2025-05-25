@@ -23,7 +23,7 @@ const NodgeTabs: React.FC<NodgeTabsProps> = ({ tabs, defaultValue }) => {
 					<TabsTrigger
 						key={index}
 						value={tab.label}
-						className="data-[state=active]:bg-gradient-to-tr data-[state=active]:from-primary data-[state=active]:to-primary-300 data-[state=active]:text-gray-800"
+						className="data-[state=active]:bg-gradient-to-tr data-[state=active]:from-primary data-[state=active]:to-primary-300 data-[state=active]:text-primary-foreground"
 					>
 						{tab.trigger}
 					</TabsTrigger>

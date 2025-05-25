@@ -22,9 +22,9 @@ const ThemeColorCards = {
 		colorPallets: [
 			{ name: "Background", color: "bg-[#ffffff]" },
 			{ name: "Foreground", color: "bg-[#09090b]" },
+			{ name: "Primary", color: "bg-[#22c55e]" },
 			{ name: "Card", color: "bg-[#ffffff]" },
 			{ name: "Border", color: "bg-[#e4e4e7]" },
-			{ name: "Primary", color: "bg-[#22c55e]" },
 			{ name: "Chart1", color: "bg-[#e67c73]" },
 			{ name: "Chart2", color: "bg-[#4a9e8b]" },
 			{ name: "Chart3", color: "bg-[#2f4e5e]" },
@@ -38,9 +38,9 @@ const ThemeColorCards = {
 		colorPallets: [
 			{ name: "Background", color: "bg-[#ffffff]" },
 			{ name: "Foreground", color: "bg-[#1c1917]" },
+			{ name: "Primary", color: "bg-[#f97316]" },
 			{ name: "Card", color: "bg-[#ffffff]" },
 			{ name: "Border", color: "bg-[#e7e5e4]" },
-			{ name: "Primary", color: "bg-[#f97316]" },
 			{ name: "Chart1", color: "bg-[#e67c73]" },
 			{ name: "Chart2", color: "bg-[#4a9e8b]" },
 			{ name: "Chart3", color: "bg-[#2f4e5e]" },
@@ -54,9 +54,9 @@ const ThemeColorCards = {
 		colorPallets: [
 			{ name: "Background", color: "bg-[#ffffff]" },
 			{ name: "Foreground", color: "bg-[#09090b]" },
+			{ name: "Primary", color: "bg-[#e11d48]" },
 			{ name: "Card", color: "bg-[#ffffff]" },
 			{ name: "Border", color: "bg-[#e4e4e7]" },
-			{ name: "Primary", color: "bg-[#e11d48]" },
 			{ name: "Chart1", color: "bg-[#e67c73]" },
 			{ name: "Chart2", color: "bg-[#4a9e8b]" },
 			{ name: "Chart3", color: "bg-[#2f4e5e]" },
@@ -70,9 +70,9 @@ const ThemeColorCards = {
 		colorPallets: [
 			{ name: "Background", color: "bg-[#ffffff]" },
 			{ name: "Foreground", color: "bg-[#0f172a]" },
+			{ name: "Primary", color: "bg-[#8b5cf6]" },
 			{ name: "Card", color: "bg-[#ffffff]" },
 			{ name: "Border", color: "bg-[#e2e8f0]" },
-			{ name: "Primary", color: "bg-[#8b5cf6]" },
 			{ name: "Chart1", color: "bg-[#e67c73]" },
 			{ name: "Chart2", color: "bg-[#4a9e8b]" },
 			{ name: "Chart3", color: "bg-[#2f4e5e]" },
@@ -86,9 +86,9 @@ const ThemeColorCards = {
 		colorPallets: [
 			{ name: "Background", color: "bg-[#ffffff]" },
 			{ name: "Foreground", color: "bg-[#052e16]" },
+			{ name: "Primary", color: "bg-[#3b82f6]" },
 			{ name: "Card", color: "bg-[#ffffff]" },
 			{ name: "Border", color: "bg-[#e2e8f0]" },
-			{ name: "Primary", color: "bg-[#3b82f6]" },
 			{ name: "Chart1", color: "bg-[#e67c73]" },
 			{ name: "Chart2", color: "bg-[#4a9e8b]" },
 			{ name: "Chart3", color: "bg-[#2f4e5e]" },
@@ -214,7 +214,7 @@ const AppearanceSetting = () => {
 								</p>
 							</div>
 							<Card className="p-3 px-5 rounded-md grid grid-cols-[1fr_70px]">
-								<div className="w-full h-auto grid grid-cols-5 gap-2 place-content-start place-items-start">
+								<div className="w-full h-auto grid grid-cols-5 max-2xl:grid-cols-4 max-xl:grid-cols-3 max-lg:grid-cols-2 gap-2 place-content-center place-items-center">
 									{Object.entries(ThemeColorCards).map(
 										([
 											key,
@@ -222,7 +222,7 @@ const AppearanceSetting = () => {
 										]) => (
 											<div
 												key={key}
-												className={`relative w-full h-auto p-4 rounded-md flex justify-center gap-1 items-center cursor-pointer border-[1px] ${
+												className={`relative h-auto w-full p-4 rounded-md flex justify-center gap-1 items-center cursor-pointer border-[1px] ${
 													color === selectedColor &&
 													"bg-card bg-clip-content"
 												}`}

@@ -21,9 +21,11 @@ import { WorkflowCard } from "./_components/workflow-card";
 import { useView } from "@/components/providers/view-layout-provider";
 import { NodgeWorkflowCardSkeleton } from "@/components/shared/nodge-skeleton/card";
 import { NodgeWorkflowTableSkeleton } from "@/components/shared/nodge-skeleton/table";
+import { useRouter } from "next/navigation";
 
 export default function Workflow() {
 	const { toast } = useToast();
+	const router = useRouter();
 	const apiService = new ApiService("/workflow");
 
 	// Use the context for view management
@@ -89,6 +91,7 @@ export default function Workflow() {
 	const handleView = (id: string) => {
 		// Navigate to workflow detail page
 		console.log(`View Workflow ID: ${id}`);
+		router.push(`/reactflow/${id}`);
 		// You can implement navigation here
 	};
 

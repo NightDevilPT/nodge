@@ -1,20 +1,24 @@
 "use client";
 
 import React, { ReactNode } from "react";
+import { usePathname } from "next/navigation";
+
 import NodgeLogo from "../logo";
 import NodgeSidebar from "../nodge-sidebar";
-import NodgeBreadcrumb from "../nodeg-breadcrumb";
-import { usePathname } from "next/navigation";
-import { NodgeThemeToggle } from "../nodge-theme-toggle";
 import { NodgeUserNav } from "../nodge-user-nav";
+import NodgeBreadcrumb from "../nodeg-breadcrumb";
+import { NodgeThemeToggle } from "../nodge-theme-toggle";
 
 const NodgeDynamicLayout = ({ children }: { children: ReactNode }) => {
 	const pathName = usePathname();
 	const pathArray = pathName.split("/").filter((segment) => segment);
-	const isReactFlowPath = pathArray[pathArray.length - 1] === "reactflow"; // Corrected index
+	const isReactFlowPath =
+		pathArray[pathArray.length - 1] === "reactflow" ||
+		(pathArray.length >= 2 &&
+			pathArray[pathArray.length - 2] === "reactflow");
 
-	if(isReactFlowPath){
-		return children
+	if (isReactFlowPath) {
+		return children;
 	}
 
 	return (
@@ -33,17 +37,23 @@ const NodgeDynamicLayout = ({ children }: { children: ReactNode }) => {
 					<NodgeSidebar />
 				</div>
 			</div>
-			<div className={`w-full h-full overflow-y-auto grid grid-rows-[70px,_1fr]`}>
+			<div
+				className={`w-full h-full overflow-y-auto grid grid-rows-[70px,_1fr]`}
+			>
 				<div
 					className={`w-full h-full border-b border-b-secondary flex justify-between items-center px-5 py-2`}
 				>
 					<NodgeBreadcrumb />
-					<div className={`w-auto h-full grid grid-cols-2 gap-3 place-content-center place-items-center`}>
+					<div
+						className={`w-auto h-full grid grid-cols-2 gap-3 place-content-center place-items-center`}
+					>
 						<NodgeThemeToggle />
 						<NodgeUserNav />
 					</div>
 				</div>
-				<div className={`w-full h-full overflow-y-auto`}>{children}</div>
+				<div className={`w-full h-full overflow-y-auto`}>
+					{children}
+				</div>
 			</div>
 		</main>
 	);
