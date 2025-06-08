@@ -102,7 +102,7 @@ export const WorkflowCard = ({
 			<Separator className="mt-2" />
 			<CardContent className="p-0 px-4 py-2">
 				<CardTitle className="text-lg line-clamp-1 p-0">
-					<Link href={"#"}>{name}</Link>
+					<Link href={`/reactflow/${id}`}>{name}</Link>
 				</CardTitle>
 				<div className="flex justify-end items-center gap-2">
 					<Badge

@@ -8,8 +8,13 @@ import NodgeSidebar from "../nodge-sidebar";
 import { NodgeUserNav } from "../nodge-user-nav";
 import NodgeBreadcrumb from "../nodeg-breadcrumb";
 import { NodgeThemeToggle } from "../nodge-theme-toggle";
+import {
+	SidebarEnum,
+	useView,
+} from "@/components/providers/view-layout-provider";
 
 const NodgeDynamicLayout = ({ children }: { children: ReactNode }) => {
+	const { sideBarView } = useView();
 	const pathName = usePathname();
 	const pathArray = pathName.split("/").filter((segment) => segment);
 	const isReactFlowPath =
@@ -22,19 +27,25 @@ const NodgeDynamicLayout = ({ children }: { children: ReactNode }) => {
 	}
 
 	return (
-		<main className={`w-full h-screen grid grid-cols-[300px,_1fr]`}>
+		<main
+			className={`w-full h-screen grid ${
+				sideBarView === SidebarEnum.ICON_TEXT
+					? "grid-cols-[300px,_1fr]"
+					: "grid-cols-[80px,_1fr]"
+			}`}
+		>
 			<div
 				className={`w-full h-full grid grid-rows-[80px,_1fr] border-r border-r-secondary`}
 			>
 				<div
 					className={`w-full h-full border-b-2 border-secondary flex justify-center items-center px-5 py-2`}
 				>
-					<NodgeLogo />
+					<NodgeLogo varient={sideBarView} />
 				</div>
 				<div
 					className={`w-full h-full px-5 py-2 overflow-auto flex justify-start items-start`}
 				>
-					<NodgeSidebar />
+					<NodgeSidebar variant={sideBarView} />
 				</div>
 			</div>
 			<div

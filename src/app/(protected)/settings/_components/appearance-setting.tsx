@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import NodgeLayoutSwitch from "@/components/shared/nodge-layout-switch";
-import { useView } from "@/components/providers/view-layout-provider";
+import {
+	SidebarEnum,
+	useView,
+} from "@/components/providers/view-layout-provider";
 import { Card, CardContent } from "@/components/ui/card";
 import AppearanceSettingSkeleton from "@/components/shared/nodge-skeleton/appearance";
 import { Switch } from "@/components/ui/switch";
@@ -13,7 +16,10 @@ import {
 	ThemeMode,
 	useTheme,
 } from "@/components/providers/theme-provider";
-import { CheckCheck } from "lucide-react";
+import { CheckCheck, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import NodgeSidebarSwitch from "@/components/shared/nodge-sidebar-switch";
 
 const ThemeColorCards = {
 	DEFAULT: {
@@ -116,7 +122,7 @@ const ThemeColorCards = {
 
 const AppearanceSetting = () => {
 	const { theme, setTheme, color: selectedColor, setColor } = useTheme();
-	const { view, setView } = useView();
+	const { view, setView, sideBarView, toggleSidebarView } = useView();
 	const [isMounted, setIsMounted] = useState(false);
 
 	useEffect(() => {
@@ -199,8 +205,41 @@ const AppearanceSetting = () => {
 								</div>
 							</Card>
 						</div>
+						<Separator />
+
+						<div className="space-y-4">
+							<div>
+								<h3 className="text-base font-medium">
+									Sidebar Display
+								</h3>
+								<p className="text-sm text-muted-foreground">
+									Choose how you want the sidebar items to
+									appear.
+								</p>
+							</div>
+
+							<Card className="p-4 rounded-lg">
+								<div className="flex justify-between items-center">
+									<div>
+										<h4 className="text-sm font-medium">
+											Current View
+										</h4>
+										<p className="text-xs text-muted-foreground">
+											{sideBarView === SidebarEnum.ICON
+												? "Compact view shows only icons"
+												: "Expanded view shows icons with labels"}
+										</p>
+									</div>
+									<NodgeSidebarSwitch
+										currentView={sideBarView}
+										onViewChange={toggleSidebarView}
+									/>
+								</div>
+							</Card>
+						</div>
 
 						<Separator />
+
 						<div className="space-y-4">
 							<div>
 								<h3 className="text-base font-medium">

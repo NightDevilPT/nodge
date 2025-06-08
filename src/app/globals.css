@@ -371,7 +371,3 @@ body {
 		@apply bg-background text-foreground;
 	}
 }
-
-.react-flow {
-	--xy-theme-selected: #f57dbd;
-}

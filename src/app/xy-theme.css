@@ -1,0 +1,7 @@
+.react-flow {
+	--xy-background-color-default: #ffffff;
+}
+
+.react-flow.dark {
+	--xy-background-color-default: var(--foreground, red);
+}

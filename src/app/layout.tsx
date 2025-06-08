@@ -1,5 +1,5 @@
-import "./globals.css";
 import '@xyflow/react/dist/style.css';
+import "./globals.css";
 
 import type { Metadata } from "next";
 import RootProvider from "@/components/providers";
