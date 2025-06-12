@@ -1,4 +1,3 @@
-import { Credential } from "./credential.interface";
 import { WorkflowResponse } from "./workflow.interface";
 
 export interface Profile {

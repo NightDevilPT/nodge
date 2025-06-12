@@ -4,7 +4,7 @@ import { config } from "@/components/config"; // Import your config
 type TokenPayload = {
 	userId: string;
 	email: string;
-};
+} | any;
 
 class JwtService {
 	/**
