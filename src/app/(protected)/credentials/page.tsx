@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import ApiService from "@/services/api.service";
 import { Button } from "@/components/ui/button";
 import {
+	CREDENTIAL_TYPES,
 	CredentialResponse,
 	CredentialType,
 } from "@/interface/credential.interface";
@@ -23,6 +24,7 @@ import { NodgeWorkflowCardSkeleton } from "@/components/shared/nodge-skeleton/ca
 import { NodgeWorkflowTableSkeleton } from "@/components/shared/nodge-skeleton/table";
 import CredentialForm from "./_components/credential-form";
 import { SecurityUtils } from "@/lib/security-utils";
+import { generateUuid } from "@/lib/uuid-generator";
 
 export default function Credentials() {
 	const { toast } = useToast();
@@ -122,17 +124,37 @@ export default function Credentials() {
 
 	const columns: ColumnConfig<CredentialResponse>[] = [
 		{
+			field: "icon",
+			headerName: "Icon",
+			sortable: true,
+			width: "15%",
+			renderCell: (item) => {
+				const credentialConfig = CREDENTIAL_TYPES[item.credentialType];
+				const IconComponent = credentialConfig?.defaultIcon;
+				return (
+					IconComponent && (
+						<div className="w-full h-auto flex justify-center items-center">
+							<IconComponent className="w-5 h-5" />
+						</div>
+					)
+				);
+			},
+		},
+		{
 			field: "credentialType",
 			headerName: "Type",
 			sortable: true,
 			width: "15%",
-			renderCell: (item) => (
-				<Badge
-					className="bg-blue-100 text-blue-800 hover:bg-blue-300"
-				>
-					{item.credentialType}
-				</Badge>
-			),
+			renderCell: (item) => {
+				const credentialConfig = CREDENTIAL_TYPES[item.credentialType];
+				return (
+					<Badge
+						className={`${credentialConfig.bgColor}`}
+					>
+						{item.credentialType}
+					</Badge>
+				);
+			},
 		},
 		{
 			field: "id",
@@ -140,14 +162,17 @@ export default function Credentials() {
 			sortable: false,
 			width: "25%",
 			renderCell: (item) => {
-				const decryptedValue = SecurityUtils.decryptSecureCredentialValue(item.credentialsValue);
+				const decryptedValue =
+					SecurityUtils.decryptSecureCredentialValue(
+						item.credentialsValue as any
+					);
 				const keys = Object.keys(decryptedValue || {});
 				return (
 					<div className="flex flex-wrap gap-1">
 						{keys.length > 0 ? (
 							keys.slice(0, 2).map((key, index) => (
 								<Badge
-									key={index}
+									key={key + index}
 									variant="outline"
 									className="text-xs"
 								>
@@ -155,7 +180,9 @@ export default function Credentials() {
 								</Badge>
 							))
 						) : (
-							<span className="text-gray-400 text-xs">No keys</span>
+							<span className="text-gray-400 text-xs">
+								No keys
+							</span>
 						)}
 						{keys.length > 2 && (
 							<Badge variant="outline" className="text-xs">
@@ -243,9 +270,12 @@ export default function Credentials() {
 										item.credentialType as CredentialType
 									}
 									credentialsValue={
-										SecurityUtils.decryptSecureCredentialValue(
-											item.credentialsValue
-										) || {}
+										typeof item.credentialsValue ===
+										"string"
+											? SecurityUtils.decryptSecureCredentialValue(
+													item.credentialsValue
+											  ) || {}
+											: item.credentialsValue || {}
 									}
 									updatedAt={item.updatedAt}
 									onEdit={handleEdit}

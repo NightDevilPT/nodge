@@ -30,19 +30,18 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import ApiService from "@/services/api.service";
 import {
 	CredentialType,
 	CREDENTIAL_TYPES,
 } from "@/interface/credential.interface";
-import { AwsCredentialForm } from "./credentials-form/aws";
-import { SlackCredentialForm } from "./credentials-form/slack";
+import ApiService from "@/services/api.service";
+import { Button } from "@/components/ui/button";
 import { SecurityUtils } from "@/lib/security-utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { CredentialInputForm } from "./credentials-form/credentials-input-form";
 
 const credentialSchema = z.object({
-	credentialType: z.string(),
+	credentialType: z.string().min(1, "Credential type is required"),
 	credentialsValue: z.record(z.any()),
 });
 
@@ -54,6 +53,16 @@ interface CredentialFormProps {
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	userId?: string;
+}
+
+export interface CredentialFormComponentProps {
+	form: any;
+	fields: Array<{
+		name: string;
+		label: string;
+		type: string;
+	}>;
+	isSubmitting: boolean;
 }
 
 export default function CredentialForm({
@@ -79,8 +88,10 @@ export default function CredentialForm({
 
 	const selectedType = form.watch("credentialType");
 	const credentialConfig = selectedType
-		? CREDENTIAL_TYPES[selectedType]
+		? CREDENTIAL_TYPES[selectedType as keyof typeof CREDENTIAL_TYPES]
 		: null;
+	const CredentialFormComponent =
+		credentialConfig?.form || CredentialInputForm;
 
 	// Reset form when dialog opens/closes or credential changes
 	React.useEffect(() => {
@@ -101,7 +112,7 @@ export default function CredentialForm({
 				});
 			}
 		}
-	}, [open, form]);
+	}, [open, form, mode, credential]);
 
 	const onSubmit = async (values: z.infer<typeof credentialSchema>) => {
 		try {
@@ -118,6 +129,7 @@ export default function CredentialForm({
 				toast({
 					title: "Success",
 					description: "Credential updated successfully",
+					variant: "success",
 				});
 			} else {
 				await apiService.create("create", {
@@ -128,14 +140,17 @@ export default function CredentialForm({
 				toast({
 					title: "Success",
 					description: "Credential created successfully",
+					variant: "success",
 				});
 			}
 			setOpen(false);
 			onSuccess?.();
-		} catch (error) {
+		} catch (error: any) {
+			console.error("Credential submission error:", error);
 			toast({
 				title: "Error",
-				description: "Something went wrong. Please try again.",
+				description:
+					error.message || "Something went wrong. Please try again.",
 				variant: "destructive",
 			});
 		} finally {
@@ -201,29 +216,24 @@ export default function CredentialForm({
 
 							{credentialConfig && (
 								<div className="space-y-4">
-									{selectedType === CredentialType.AWS && (
-										<AwsCredentialForm
-											form={form}
-											fields={credentialConfig.fields}
-											isSubmitting={isSubmitting}
-										/>
-									)}
-									{selectedType === CredentialType.SLACK && (
-										<SlackCredentialForm
-											form={form}
-											fields={credentialConfig.fields}
-											isSubmitting={isSubmitting}
-										/>
-									)}
+									<CredentialFormComponent
+										form={form}
+										fields={credentialConfig?.fields || []}
+										isSubmitting={isSubmitting}
+									/>
 								</div>
 							)}
 
-							<DialogFooter>
+							<DialogFooter className="pt-4">
 								<Button
-									type="submit"
+									type="button"
+									variant="outline"
+									onClick={() => setOpen(false)}
 									disabled={isSubmitting}
-									className="w-full"
 								>
+									Cancel
+								</Button>
+								<Button type="submit" disabled={isSubmitting}>
 									{isSubmitting && (
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									)}

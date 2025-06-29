@@ -5,6 +5,7 @@ import { CommonApiResponse } from "@/interface/common.interface";
 import {
 	CreateCredentialRequest,
 	CredentialResponse,
+	CredentialType,
 } from "@/interface/credential.interface";
 
 /**
@@ -97,8 +98,8 @@ const updateCredentialHandler = async (
 
 		const credentialResponse: CredentialResponse = {
 			id: updatedCredential.id,
-			credentialType: updatedCredential.credentialType,
-			credentialsValue: updatedCredential.credentialsValue,
+			credentialType: updatedCredential.credentialType as CredentialType,
+			credentialsValue: updatedCredential.credentialsValue as any,
 			createdAt: updatedCredential.createdAt.toISOString(),
 			updatedAt: updatedCredential.updatedAt.toISOString(),
 			profileId: updatedCredential.profileId,
