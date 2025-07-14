@@ -24,7 +24,7 @@ import { NodgeWorkflowCardSkeleton } from "@/components/shared/nodge-skeleton/ca
 import { NodgeWorkflowTableSkeleton } from "@/components/shared/nodge-skeleton/table";
 import CredentialForm from "./_components/credential-form";
 import { SecurityUtils } from "@/lib/security-utils";
-import { generateUuid } from "@/lib/uuid-generator";
+import { NodgeDialog } from "@/components/shared/nodge-dialog"; // Import the new dialog component
 
 export default function Credentials() {
 	const { toast } = useToast();
@@ -43,6 +43,9 @@ export default function Credentials() {
 	const [editingCredential, setEditingCredential] = useState<
 		CredentialResponse | undefined
 	>(undefined);
+	const [deletingCredentialId, setDeletingCredentialId] = useState<
+		string | null
+	>(null);
 
 	const fetchCredentials = async () => {
 		try {
@@ -98,23 +101,31 @@ export default function Credentials() {
 		}
 	};
 
-	const handleDelete = async (id: string) => {
-		if (confirm("Are you sure you want to delete this credential?")) {
-			try {
-				await apiService.delete(`delete/${id}`);
-				toast({
-					title: "Success",
-					description: "Credential deleted successfully",
-					variant: "success",
-				});
-				fetchCredentials();
-			} catch (error: any) {
-				toast({
-					title: "Error",
-					description: error.message || "Failed to delete credential",
-					variant: "destructive",
-				});
-			}
+	const handleDeleteClick = (id: string) => {
+		setDeletingCredentialId(id);
+	};
+
+	const handleDeleteConfirm = async () => {
+		if (!deletingCredentialId) return;
+
+		try {
+			await apiService.delete(
+				`delete-credentials/${deletingCredentialId}`
+			);
+			toast({
+				title: "Success",
+				description: "Credential deleted successfully",
+				variant: "success",
+			});
+			fetchCredentials();
+		} catch (error: any) {
+			toast({
+				title: "Error",
+				description: error.message || "Failed to delete credential",
+				variant: "destructive",
+			});
+		} finally {
+			setDeletingCredentialId(null);
 		}
 	};
 
@@ -148,9 +159,7 @@ export default function Credentials() {
 			renderCell: (item) => {
 				const credentialConfig = CREDENTIAL_TYPES[item.credentialType];
 				return (
-					<Badge
-						className={`${credentialConfig.bgColor}`}
-					>
+					<Badge className={`${credentialConfig.bgColor}`}>
 						{item.credentialType}
 					</Badge>
 				);
@@ -218,7 +227,7 @@ export default function Credentials() {
 					<Button
 						className="w-8 h-8 p-1 !bg-gradient-to-tr !from-destructive !to-red-400 !text-white cursor-pointer"
 						variant="destructive"
-						onClick={() => handleDelete(item.id)}
+						onClick={() => handleDeleteClick(item.id)}
 					>
 						<TbTrash />
 					</Button>
@@ -279,7 +288,7 @@ export default function Credentials() {
 									}
 									updatedAt={item.updatedAt}
 									onEdit={handleEdit}
-									onDelete={handleDelete}
+									onDelete={handleDeleteClick}
 								/>
 							)}
 						/>
@@ -324,6 +333,22 @@ export default function Credentials() {
 					setEditingCredential(undefined);
 				}}
 			/>
+
+			{/* Delete Confirmation Dialog */}
+			<NodgeDialog
+				open={!!deletingCredentialId}
+				onOpenChange={(open) => !open && setDeletingCredentialId(null)}
+				title="Delete Credential"
+				actionText="Delete"
+				actionButtonProps={{
+					variant: "destructive",
+					className:
+						"!bg-gradient-to-tr !from-destructive !to-red-400",
+				}}
+				onSubmit={handleDeleteConfirm}
+			>
+				<p>Are you sure you want to delete this credential?</p>
+			</NodgeDialog>
 		</main>
 	);
 }
