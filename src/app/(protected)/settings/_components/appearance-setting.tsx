@@ -20,6 +20,8 @@ import { CheckCheck, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import NodgeSidebarSwitch from "@/components/shared/nodge-sidebar-switch";
+import { LanguageSwitcher } from "@/components/shared/nodge-language-switcher";
+import { useTranslation } from "react-i18next";
 
 const ThemeColorCards = {
 	DEFAULT: {
@@ -174,6 +176,41 @@ const AppearanceSetting = () => {
 							</Card>
 						</div>
 						<Separator />
+
+						{/* Language Section */}
+						<div className="space-y-4">
+							<div>
+								<h3 className="text-base font-medium">
+									Language & Region
+								</h3>
+								<p className="text-sm text-muted-foreground">
+									Choose your preferred language for the
+									application interface. This will change the
+									text and content language throughout Nodge.
+								</p>
+							</div>
+							<Card className="p-3 px-5 rounded-md grid grid-cols-[1fr_auto]">
+								<div className="w-full h-auto grid grid-cols-1 gap-0 place-content-start place-items-start">
+									<h3>Application Language</h3>
+									<span className="text-xs text-muted-foreground">
+										Select your preferred language for
+										menus, buttons, and interface text.
+									</span>
+								</div>
+								<div className="flex w-full justify-center items-center space-x-2">
+									<LanguageSwitcher
+										variant="outline"
+										size="default"
+										showFlag={true}
+										showText={true}
+										align="end"
+									/>
+								</div>
+							</Card>
+						</div>
+
+						<Separator />
+
 						<div className="space-y-4">
 							<div>
 								<h3 className="text-base font-medium">
@@ -237,7 +274,6 @@ const AppearanceSetting = () => {
 								</div>
 							</Card>
 						</div>
-
 						<Separator />
 
 						<div className="space-y-4">

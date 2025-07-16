@@ -12,6 +12,7 @@ import {
 	SidebarEnum,
 	useView,
 } from "@/components/providers/view-layout-provider";
+import { LanguageSwitcher } from "../nodge-language-switcher";
 
 const NodgeDynamicLayout = ({ children }: { children: ReactNode }) => {
 	const { sideBarView } = useView();
@@ -56,8 +57,14 @@ const NodgeDynamicLayout = ({ children }: { children: ReactNode }) => {
 				>
 					<NodgeBreadcrumb />
 					<div
-						className={`w-auto h-full grid grid-cols-2 gap-3 place-content-center place-items-center`}
+						className={`w-auto h-full grid grid-cols-3 gap-0 place-content-center place-items-center`}
 					>
+						<LanguageSwitcher
+							showText={false}
+							showFlag={false}
+							size="sm"
+							variant="ghost"
+						/>
 						<NodgeThemeToggle />
 						<NodgeUserNav />
 					</div>
