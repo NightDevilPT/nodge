@@ -1,5 +1,24 @@
 {
 	"general": {
-		"welcome": "Welcome to our application!"
+		"welcome": "Welcome to our application!",
+		"firstName": "First Name",
+		"lastName": "Last Name",
+		"phoneNumber": "Phone Number",
+		"gender": "Gender",
+		"cancel": "Cancel"
+	},
+	"notFoundPage":{
+		"oopsWeCantSeemToFindThatPage": "Oops! We can't seem to find the page you're looking for.",
+		"theResourceYouAreTringToAccessIsUnavailable": "The resource you're trying to access is unavailable or does not exist.",
+		"goBackHome": "Go back home"
+	},
+	"settings":{
+		"profile": {
+			"profileSetting": "Profile Settings",
+			"profileCreated": "Profile created",
+			"profileAvatar": "Profile Avatar",
+			"createProfile": "Create Profile",
+			"updateProfile": "Update Profile"
+		}
 	}
 }

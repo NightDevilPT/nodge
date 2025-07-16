@@ -1,5 +1,10 @@
 {
-	"general":{
-		"welcome":"Welcome to our application!"
+	"general": {
+		"welcome": "Welcome to our application!"
+	},
+	"notFoundPage": {
+		"oopsWeCantSeemToFindThatPage": "おっと！お探しのページが見つかりません。",
+		"theResourceYouAreTringToAccessIsUnavailable": "アクセスしようとしているリソースは利用できないか存在しません。",
+		"goBackHome": "ホームに戻る"
 	}
 }

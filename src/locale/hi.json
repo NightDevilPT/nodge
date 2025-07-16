@@ -1,5 +1,10 @@
 {
-	"general":{
-		"welcome":"Welcome to our application!"
+	"general": {
+		"welcome": "Welcome to our application!"
+	},
+	"notFoundPage": {
+		"oopsWeCantSeemToFindThatPage": "उफ़! हम उस पृष्ठ को नहीं ढूंढ पा रहे हैं जिसे आप खोज रहे हैं।",
+		"theResourceYouAreTringToAccessIsUnavailable": "जिस संसाधन को आप एक्सेस करने की कोशिश कर रहे हैं वह अनुपलब्ध है या मौजूद नहीं है।",
+		"goBackHome": "मुखपृष्ठ पर जाएं"
 	}
 }

@@ -1,9 +1,10 @@
-import '@xyflow/react/dist/style.css';
+import "@xyflow/react/dist/style.css";
 import "./globals.css";
 
 import type { Metadata } from "next";
 import RootProvider from "@/components/providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 
 export const metadata: Metadata = {
 	title: "NodeFlow",
@@ -19,7 +20,7 @@ export default function RootLayout({
 		<html lang="en" suppressHydrationWarning>
 			<body className={``}>
 				<RootProvider>
-					{children}
+					<I18nProvider>{children}</I18nProvider>
 				</RootProvider>
 				<SpeedInsights />
 			</body>

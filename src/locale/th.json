@@ -1,5 +1,10 @@
 {
-	"general":{
-		"welcome":"Welcome to our application!"
+	"general": {
+		"welcome": "Welcome to our application!"
+	},
+	"notFoundPage": {
+		"oopsWeCantSeemToFindThatPage": "อ๊ะ! เราไม่พบหน้าที่คุณกำลังมองหา",
+		"theResourceYouAreTringToAccessIsUnavailable": "ทรัพยากรที่คุณพยายามเข้าถึงไม่สามารถใช้งานได้หรือไม่มีอยู่",
+		"goBackHome": "กลับไปหน้าหลัก"
 	}
 }

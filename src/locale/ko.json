@@ -1,5 +1,10 @@
 {
-	"general":{
-		"welcome":"Welcome to our application!"
+	"general": {
+		"welcome": "Welcome to our application!"
+	},
+	"notFoundPage": {
+		"oopsWeCantSeemToFindThatPage": "이런! 찾고 계신 페이지를 찾을 수 없습니다.",
+		"theResourceYouAreTringToAccessIsUnavailable": "접속하려는 리소스를 사용할 수 없거나 존재하지 않습니다.",
+		"goBackHome": "홈으로 돌아가기"
 	}
 }

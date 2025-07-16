@@ -1,5 +1,10 @@
 {
-	"general":{
-		"welcome":"Welcome to our application!"
+	"general": {
+		"welcome": "Welcome to our application!"
+	},
+	"notFoundPage": {
+		"oopsWeCantSeemToFindThatPage": "Rất tiếc! Chúng tôi không thể tìm thấy trang bạn đang tìm.",
+		"theResourceYouAreTringToAccessIsUnavailable": "Tài nguyên bạn đang cố truy cập không khả dụng hoặc không tồn tại.",
+		"goBackHome": "Quay lại trang chủ"
 	}
 }

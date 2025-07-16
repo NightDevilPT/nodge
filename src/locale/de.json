@@ -1,5 +1,24 @@
 {
 	"general":{
-		"welcome":"Welcome to our application!"
+		"welcome":"Welcome to our application!",
+		"firstName": "Vorname",
+		"lastName": "Nachname",
+		"phoneNumber": "Telefonnummer",
+		"gender": "Geschlecht",
+		"cancel": "Abbrechen"
+	},
+	"notFoundPage":{
+		"oopsWeCantSeemToFindThatPage": "Ups! Wir können die Seite, die Sie suchen, nicht finden.",
+		"theResourceYouAreTringToAccessIsUnavailable": "Die Ressource, auf die Sie zugreifen möchten, ist nicht verfügbar oder existiert nicht.",
+		"goBackHome": "Zurück zur Startseite"
+	},
+	"settings":{
+		"profile": {
+			"profileSetting": "Profileinstellungen",
+			"profileCreated": "Profil erstellt",
+			"profileAvatar": "Profilbild",
+			"createProfile": "Profil erstellen",
+			"updateProfile": "Profil aktualisieren"
+		}
 	}
 }

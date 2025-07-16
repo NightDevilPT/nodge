@@ -1,5 +1,10 @@
 {
-	"general":{
-		"welcome":"Welcome to our application!"
+	"general": {
+		"welcome": "Welcome to our application!"
+	},
+	"notFoundPage": {
+		"oopsWeCantSeemToFindThatPage": "哎呀！我们找不到您要查找的页面。",
+		"theResourceYouAreTringToAccessIsUnavailable": "您尝试访问的资源不可用或不存在。",
+		"goBackHome": "返回首页"
 	}
 }

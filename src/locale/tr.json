@@ -1,5 +1,10 @@
 {
-	"general":{
-		"welcome":"Welcome to our application!"
+	"general": {
+		"welcome": "Welcome to our application!"
+	},
+	"notFoundPage": {
+		"oopsWeCantSeemToFindThatPage": "Hata! Aradığınız sayfayı bulamıyoruz.",
+		"theResourceYouAreTringToAccessIsUnavailable": "Erişmeye çalıştığınız kaynak kullanılamıyor veya mevcut değil.",
+		"goBackHome": "Ana sayfaya dön"
 	}
 }
